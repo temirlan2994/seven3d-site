@@ -414,7 +414,7 @@
         });
         h += '<div class="bf-preview"><p class="small">Уйдёт нам в WhatsApp — отправляете вы сами:</p><p class="bf-bubble" data-msg>' + esc(message()) + '</p></div>';
         h += '<div class="bf-send"><a class="btn btn-w" data-wa href="' + esc(waHref()) + '" target="_blank" rel="noopener" data-act="send">' + ICO.wa + 'Отправить в WhatsApp</a><button class="bf-link" type="button" data-act="copy">Скопировать текст</button></div>';
-        h += '<p class="bf-call" data-note><span>Удобнее позвонить?</span><b>' + esc(B.phoneHuman) + '</b><span>Работаем ' + esc(B.hours) + '</span></p>';
+        h += '<p class="bf-call" data-note><span>Удобнее позвонить?</span><b>' + esc(B.phoneHuman) + '</b></p>';
       }
       h += '</div>';
       h += '<div class="bf-foot">' + (st.i > 0 ? '<button class="bf-link" type="button" data-act="back">← Назад</button>' : '') + '<p class="small">Около минуты. Без регистрации и звонков без спроса.</p></div>';
@@ -580,7 +580,7 @@
     }) : null;
   }
   function slideHTML(s) {
-    if (s.kind === 'brief') return '<h2 class="deck-h" tabindex="-1">Короткий бриф</h2><p class="deck-p">Несколько ответов в одно касание — и готовое сообщение уйдёт нам в WhatsApp.</p><div class="deck-brief"></div>';
+    if (s.kind === 'brief') return '<h2 class="deck-h" tabindex="-1">Короткий бриф</h2><p class="deck-p">Ответьте на пару вопросов — сообщение уйдёт в WhatsApp.</p><div class="deck-brief"></div>';
     var h = '<h2 class="deck-h" tabindex="-1">' + esc(s.title) + '</h2>';
     if (s.big) h += '<p class="deck-big">' + esc(s.big) + '</p>';
     if (s.text) h += '<p class="deck-p">' + esc(s.text) + '</p>';
@@ -718,40 +718,87 @@
   var startDeck = /^#deck-(.+)$/.exec(location.hash);
   if (startDeck && DECKS[startDeck[1]]) openDeck(startDeck[1], false);
 
-  /* ---------- Телефон: короче «Как мы работаем» и «О студии» ----------
-     Принципы и «Что нужно от вас» — раскрывающиеся строки (первая открыта), у крупных проектов — первые три и «Показать ещё».
-     На широком экране всё раскрыто, заголовки не кнопки. */
-  var phoneMQ = window.matchMedia('(max-width: 699px)');
-  var folds = $$('#process .princ li, #process .need');
-  folds.forEach(function (li, i) {
-    var t = li.querySelector('.h3');
-    if (!t) return;
-    if (i === 0) li.classList.add('is-open');
-    li.classList.add('fold');
-    t.addEventListener('click', function () {
-      if (!phoneMQ.matches) return;
-      var on = !li.classList.contains('is-open');
-      li.classList.toggle('is-open', on); t.setAttribute('aria-expanded', on ? 'true' : 'false');
+  /* ---------- О студии: две цифры-счётчика и крупные проекты ---------- */
+  /* Цифры «прокручиваются» снизу вверх, как механический счётчик, когда блок появляется на экране.
+     Ширина каждой цифры — в em, поэтому счётчик не прыгает и при смене размера окна. */
+  var rolls = $$('[data-roll]');
+  if (rolls.length && HAS_IO && !REDUCE) {
+    var rollInit = function () {
+      rolls.forEach(function (el) {
+        var v = $('.anum-v', el), txt = v.textContent.trim(), fs = parseFloat(getComputedStyle(el).fontSize) || 100;
+        el.setAttribute('aria-label', txt + ($('.anum-sfx', el) ? '+' : ''));
+        v.innerHTML = txt.split('').map(function (d) { return '<span class="rd-m">' + d + '</span>'; }).join('');
+        var ws = $$('.rd-m', v).map(function (x) { return x.getBoundingClientRect().width / fs; });
+        v.innerHTML = txt.split('').map(function (d, i) {
+          var strip = '';
+          for (var k = 0; k < 20; k++) strip += '<span>' + (k % 10) + '</span>';
+          return '<span class="rd" style="width:' + ws[i].toFixed(3) + 'em"><span class="rd-s" data-d="' + d + '">' + strip + '</span></span>';
+        }).join('');
+        v.setAttribute('aria-hidden', 'true');
+        el.classList.add('is-wait');
+      });
+      var rio = new IntersectionObserver(function (es) {
+        es.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          rio.unobserve(en.target);
+          $$('.rd-s', en.target).forEach(function (st, i) {
+            st.style.transitionDelay = (i * 0.12).toFixed(2) + 's';
+            st.style.transform = 'translateY(' + (-(10 + +st.getAttribute('data-d')) * 5) + '%)';
+          });
+          en.target.classList.remove('is-wait');
+        });
+      }, { rootMargin: '0px 0px -12% 0px' });
+      rolls.forEach(function (el) { rio.observe(el); });
+    };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(rollInit, rollInit); else rollInit();
+  }
+  /* Крупные проекты: список слева, по нажатию справа открывается панель — ролик (или картинка), описание и ссылка.
+     Ролик берётся из data-yt кнопки проекта (номер ролика на YouTube); пока его нет — место под ролик. */
+  var ap = $('[data-aproj]');
+  if (ap) {
+    var apTabs = $$('[role="tab"]', ap), apPanel = $('[role="tabpanel"]', ap), apPh = $('[data-ap-media]', ap).innerHTML;
+    var apUp = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"></path></svg>';
+    var apMedia = function (t, name) {
+      var yt = t.getAttribute('data-yt'), im = t.getAttribute('data-img');
+      if (yt) return '<button class="aproj-play" type="button" data-yt="' + esc(yt) + '" aria-label="Смотреть ролик: ' + esc(name) + '"><img src="https://i.ytimg.com/vi/' + encodeURIComponent(yt) + '/hqdefault.jpg" alt="" loading="lazy"><span class="vabout-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"></path></svg></span></button>';
+      if (im) return '<img src="' + esc(im) + '" alt="' + esc(t.getAttribute('data-alt') || name) + '" loading="lazy">';
+      if (t.getAttribute('data-url')) return '<img src="assets/img/ph-deck.svg" alt="">';
+      return apPh;
+    };
+    var apShow = function (t, focus) {
+      var name = $('.aproj-n', t).textContent, url = t.getAttribute('data-url');
+      apTabs.forEach(function (x) { var on = x === t; x.classList.toggle('is-on', on); x.setAttribute('aria-selected', on ? 'true' : 'false'); x.tabIndex = on ? 0 : -1; });
+      if (focus) t.focus();
+      apPanel.setAttribute('aria-labelledby', t.id);
+      $('[data-ap-media]', apPanel).innerHTML = apMedia(t, name);
+      $('[data-ap-k]', apPanel).textContent = t.getAttribute('data-k') || '';
+      $('[data-ap-h]', apPanel).textContent = name;
+      $('[data-ap-d]', apPanel).textContent = t.getAttribute('data-d') || '';
+      $('[data-ap-acts]', apPanel).innerHTML = url ? '<a class="btn btn-o" href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(t.getAttribute('data-url-label') || 'Открыть') + apUp + '</a>' : '';
+      apPanel.classList.remove('is-in'); void apPanel.offsetWidth; apPanel.classList.add('is-in');
+      track('project_open', { id: t.id });
+    };
+    ap.addEventListener('click', function (e) {
+      var t = e.target.closest('[role="tab"]');
+      if (t) {
+        apShow(t);
+        /* телефон: панель под списком — подвозим её в кадр */
+        if (!wide()) {
+          var r = apPanel.getBoundingClientRect();
+          if (r.top > window.innerHeight * 0.6 || r.top < 60) apPanel.scrollIntoView({ behavior: REDUCE ? 'auto' : 'smooth', block: 'center' });
+        }
+        return;
+      }
+      var pl = e.target.closest('.aproj-play');
+      if (pl) pl.parentNode.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + encodeURIComponent(pl.getAttribute('data-yt')) + '?autoplay=1&rel=0&playsinline=1" title="' + esc(pl.getAttribute('aria-label')) + '" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>';
     });
-    t.addEventListener('keydown', function (e) { if (phoneMQ.matches && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); t.click(); } });
-  });
-  var foldMode = function () {
-    folds.forEach(function (li) {
-      var t = li.querySelector('.h3');
-      if (!t) return;
-      if (phoneMQ.matches) { t.setAttribute('role', 'button'); t.tabIndex = 0; t.setAttribute('aria-expanded', li.classList.contains('is-open') ? 'true' : 'false'); }
-      else { t.removeAttribute('role'); t.removeAttribute('tabindex'); t.removeAttribute('aria-expanded'); }
+    /* стрелки переключают проекты, как вкладки */
+    $('[role="tablist"]', ap).addEventListener('keydown', function (e) {
+      var i = apTabs.indexOf(document.activeElement), k = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+      if (i < 0) return;
+      if (k) { e.preventDefault(); apShow(apTabs[(i + k + apTabs.length) % apTabs.length], true); }
+      else if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); apShow(apTabs[e.key === 'Home' ? 0 : apTabs.length - 1], true); }
     });
-  };
-  foldMode();
-  if (phoneMQ.addEventListener) phoneMQ.addEventListener('change', foldMode); else if (phoneMQ.addListener) phoneMQ.addListener(foldMode);
-  var alist = $('#about .alist');
-  if (alist && alist.children.length > 3) {
-    var amore = document.createElement('button');
-    amore.type = 'button'; amore.className = 'btn btn-o amore'; amore.textContent = 'Показать ещё ' + (alist.children.length - 3);
-    alist.classList.add('is-short');
-    alist.parentNode.insertBefore(amore, alist.nextSibling);
-    amore.addEventListener('click', function () { alist.classList.remove('is-short'); amore.hidden = true; });
   }
 
   /* ---------- Работы: вкладки по типу и просмотр во всплывающем окне ---------- */

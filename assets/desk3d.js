@@ -81,89 +81,47 @@
   var PART = { finmodel: 'book', drone1: 'tablet', drone3: 'factory', drone4: 'imagevid', clap4: 'imagevid', phonev: 'camera', touch: 'zhk',
     dio1: 'factory', dio2: 'factory', dio3: 'factory', dio4: 'factory', dio5: 'factory' };
   Object.keys(PART).forEach(function (p) { BLK[p] = BLK[PART[p]]; });
-  var WA = 'https://wa.me/996223775776?text=';
 
-  /* Подробности для панели — тексты и цены с сайта SEVEN 3D. Категория — цель посетителя; у сквозных услуг — две цели. */
+  /* Окно услуги — коротко, как у Apple: категория, 1–2 строки, цена (только если есть цифра) и кнопки.
+     «Почему», «Что входит» и примечания — в 6 слайдах «Что это?», поэтому здесь их нет. У строк rows — презентация (deck). */
   var INFO = {
-    portfolio: { cat: 'Пакет · Привлечь инвестиции', lead: 'Когда есть идея или участок, а для разговора с инвестором нужен полный комплект.',
-      steps: ['Эскизный проект участка', '3D-визуализация', 'Инвест-ролик', 'Бизнес-проект и финмодель', 'Презентация для инвестора'], seq: true,
-      price: 'Стоимость — под состав проекта, после брифа', note: 'Можно начать с презентации за $500.', pack: true },
-    sketch: { cat: 'Привлечь инвестиции', lead: 'Архитектурный эскизный проект вашего участка: расстановка домиков, кафе, дорожек и зон отдыха. Зона отдыха, курорт, глэмпинг.',
-      why: 'Эскизный проект — материал для решений, согласований и переговоров.', price: 'Расчёт под задачу',
-      note: 'Первый шаг пакета «Инвестпроект под ключ». Рабочую документацию делает проектная организация — можем работать в связке с вашей.' },
+    portfolio: { cat: 'Пакет · Привлечь инвестиции', lead: 'Когда есть идея или участок, а для разговора с инвестором нужен полный комплект.', pack: true },
+    sketch: { cat: 'Привлечь инвестиции', lead: 'Домики, кафе и дорожки на вашем участке — эскиз зоны отдыха, курорта или глэмпинга.' },
     prints: { cat: 'Привлечь инвестиции', lead: 'Фотореалистичные виды проекта до начала стройки: территория, корпуса, зоны отдыха.',
-      why: 'Инвестор видит будущий объект, пока его ещё нет. Рендеры работают в презентации, в ролике и на встрече.',
-      inc: ['3D-сцена по вашим чертежам или концепции', 'Территория и благоустройство', 'Виды с высоты и с уровня глаз'],
-      rows: [{ n: 'Для инвестпроекта', d: 'Курорт, зона отдыха, участок', p: 'Расчёт под задачу', deck: 'invest-viz' }],
-      note: 'Зависит от площади, детализации, числа ракурсов и исходных чертежей.' },
+      rows: [{ n: 'Для инвестпроекта', p: 'Расчёт под задачу', deck: 'invest-viz' }] },
     prints_e: { cat: 'Продать недвижимость', lead: 'Фотореалистичные виды жилого комплекса до начала стройки: фасады, двор, территория.',
-      why: 'Покупатель видит дом, пока его ещё нет. Рендеры работают на сайте, в рекламе и в отделе продаж.',
-      inc: ['3D-сцена по вашим чертежам', 'Фасады, двор и благоустройство', 'Виды с высоты и с уровня глаз'],
-      rows: [{ n: 'Для жилого комплекса', d: 'Фасады, двор и территория комплекса', p: 'Расчёт под задачу', deck: 'estate-viz' }],
-      note: 'Зависит от площади, детализации, числа ракурсов и исходных чертежей.' },
-    tablet: { cat: 'Привлечь инвестиции', lead: 'Ролик, который за несколько минут объясняет инвестору проект: идея, масштаб, цифры.',
-      rows: [{ n: 'Инвест-ролик', d: 'От 60 секунд до 5 минут, съёмка с дрона входит: Start $1 500, Business $2 500, Premium от $4 000', p: 'от $1 500', deck: 'invest-video' }],
-      note: '2 круга правок.' },
-    tablet_e: { cat: 'Продать недвижимость', lead: '3D-анимационный ролик о жилом комплексе: пролёт над комплексом, двор, инфраструктура района, виды из окон.',
-      rows: [{ n: '3D-ролик о жилом комплексе', p: 'от $2 000', deck: 'estate-video' }],
-      note: '2 круга правок.' },
-    book: { cat: 'Привлечь инвестиции', lead: 'Дополнение к презентации или ролику: расчёт экономики проекта — доходы, расходы и сценарии при заданных допущениях.',
-      why: 'Цифры, которые инвестор проверит первым, собраны в понятную модель.', inc: ['Модель доходов и расходов', 'Сценарии с допущениями', 'Выводы для презентации'],
-      price: 'Расчёт под задачу', note: 'Делаем вместе с презентацией или роликом, если есть исходные цифры.' },
-    present: { cat: 'Привлечь инвестиции', lead: 'Презентация на ~16 слайдов: идея, рынок, цифры и визуал. Два вида: PDF — для печати и письма; интерактивная — слайды с анимацией, которые инвестор листает сам.',
-      inc: ['Структура и логика подачи', 'Тексты по вашим материалам', 'Дизайн слайдов, диаграммы и инфографика', 'PDF или интерактивная версия с анимацией'],
-      rows: [{ n: 'Презентация для инвестора', p: '$500', deck: 'invest-pdf' }],
-      note: '~16 слайдов, 3 круга правок. Другой объём, языки и исследования оцениваем отдельно.' },
-    present_i: { cat: 'Презентовать производство или инфраструктуру', lead: 'Презентация компании на ~16 слайдов: процессы, оборудование, результаты. PDF — для печати и письма; интерактивная — слайды с анимацией для встреч и онлайн.',
-      inc: ['Структура и логика подачи', 'Тексты по вашим материалам', 'Дизайн слайдов, схемы и инфографика', 'PDF или интерактивная версия с анимацией'],
-      rows: [{ n: 'Презентация компании', d: 'О компании, процессах и результатах', p: '$500', deck: 'industry-pdf' }],
-      note: '~16 слайдов, 3 круга правок. Другой объём и языки оцениваем отдельно.' },
+      rows: [{ n: 'Для жилого комплекса', p: 'Расчёт под задачу', deck: 'estate-viz' }] },
+    tablet: { cat: 'Привлечь инвестиции', lead: 'Снимаем ваш участок с дрона и показываем на нём будущий проект. Ролик 3–5 минут с профессиональной озвучкой.',
+      rows: [{ n: 'Инвест-ролик', p: 'от $1 500', deck: 'invest-video' }] },
+    tablet_e: { cat: 'Продать недвижимость', lead: '3D-ролик о жилом комплексе: пролёт над комплексом, двор, инфраструктура района.',
+      rows: [{ n: '3D-ролик о жилом комплексе', p: 'от $2 000', deck: 'estate-video' }] },
+    book: { cat: 'Привлечь инвестиции', lead: 'Расчёт экономики проекта — доходы, расходы и сценарии. Дополнение к презентации или ролику.' },
+    present: { cat: 'Привлечь инвестиции', lead: 'Интерактивная и PDF-презентация: идея, рынок, цифры и визуал — на ~16 слайдах.',
+      rows: [{ n: 'Презентация для инвестора', p: '$500', deck: 'invest-pdf' }] },
+    present_i: { cat: 'Презентовать производство или инфраструктуру', lead: 'PDF и интерактивные презентации — слайды с анимацией о компании и процессах.',
+      rows: [{ n: 'Презентация компании', p: '$500', deck: 'industry-pdf' }] },
     vr_i: { cat: 'Презентовать производство или инфраструктуру', lead: 'Виртуальная экскурсия по цеху, станции или объекту — без пропусков и поездок.',
-      rows: [{ n: '360°-тур по объекту', d: 'Цех, склад, станция — в браузере или в VR-шлеме', p: 'Расчёт под задачу', deck: 'industry-tour' }],
-      note: 'Зависит от площади объекта и числа точек съёмки.' },
-    imagevid: { cat: 'Реклама для бизнеса', lead: 'Изучаем компанию, находим её сильные стороны и снимаем презентационный ролик, после которого о вас думают по-другому.',
-      why: 'Клиенты, партнёры и будущие сотрудники видят компанию с лучшей стороны.', inc: ['Изучение компании и сценарий', 'Съёмка, в том числе с дрона', 'Монтаж, цвет и музыка'],
-      price: 'Расчёт под задачу', note: 'Срок и стоимость — после брифа.' },
+      rows: [{ n: '360°-тур по объекту', p: 'Расчёт под задачу', deck: 'industry-tour' }] },
+    imagevid: { cat: 'Реклама для бизнеса', lead: 'Изучаем вашу компанию, находим её сильные стороны и снимаем ролик с моушн-графикой — для клиентов и партнёров.' },
     subs: { cat: 'Пакет · Реклама для бизнеса', lead: 'Каждый месяц снимаем и создаём ролики для вашего Instagram — по плану и в одном стиле.',
-      steps: ['План контента на месяц', 'Съёмка и монтаж роликов', 'AI-ролики для соцсетей'], price: 'Подписка — цена зависит от числа роликов в месяц', note: 'Объём на месяц — под ваш аккаунт и задачи.', pack: true },
+      steps: ['План контента на месяц', 'Съёмка и монтаж роликов', 'AI-ролики для соцсетей'], price: 'Цена — по числу роликов в месяц', keepPrice: true, pack: true },
     box: { cat: 'Пакет · Продать недвижимость', lead: 'Все материалы для старта продаж — в одном стиле.',
-      steps: ['3D-визуализация ЖК', '3D-ролик о ЖК', '3D-планировки', 'Дизайн буклетов и брошюр', '3D-сайт с выбором квартир или интерактивная 3D-программа ЖК'], price: 'Состав — под ваш бюджет', pack: true },
-    plan3d: { cat: 'Продать недвижимость', lead: 'Планировка квартиры в объёме: стены, мебель и отделка.', price: 'Расчёт под задачу', note: 'Входят в пакет «Запуск продаж».' },
-    zhk: { cat: 'Продать недвижимость', lead: 'Программа на Unreal Engine для сенсорного стола или экрана в офисе продаж: покупатель выбирает корпус, этаж и квартиру, ходит по ней, меняет отделку и время суток.',
-      why: 'Покупатель сам изучает квартиры в отделе продаж, на выставке или на встрече. У нас готовый шаблон, поэтому это не разработка с нуля.',
-      inc: ['Адаптация шаблона под ваш ЖК', '3D-модель комплекса', 'Данные о квартирах', 'Проверка на вашем оборудовании'],
-      price: 'Расчёт под задачу', note: 'Зависит от объёма модели, числа квартир и интеграций. Сенсорный стол или экран — ваш или под ключ, оборудование считается отдельно.' },
-    web: { cat: 'Реклама для бизнеса', lead: 'Сайт, где продукт, объект или производство можно покрутить в 3D и рассмотреть со всех сторон.',
-      why: 'Посетитель разбирается сам, дольше остаётся на сайте и оставляет заявку.', inc: ['Структура и дизайн сайта', '3D-модель и интерактив', 'Заявка с сайта'],
-      price: 'Расчёт под задачу', note: 'Состав и стоимость — после брифа.' },
-    site: { cat: 'Продать недвижимость', lead: 'Сайт комплекса, где квартиру выбирают по этажам и планировкам.',
-      why: 'Покупатель выбирает квартиру сам и оставляет заявку на конкретный вариант.',
-      inc: ['Страницы о проекте', 'Подбор квартиры по этажам и планировкам', 'Заявка на выбранную квартиру'],
-      price: 'Расчёт под задачу', note: 'Состав и стоимость согласуем после брифа.' },
-    vr: { cat: 'Продать недвижимость', lead: 'Покупатель гуляет по будущей квартире или шоуруму, не приезжая на место.',
-      rows: [{ n: 'VR-прогулка по квартире', d: 'Свободная прогулка по будущей квартире или дому, в том числе в VR-шлеме', p: 'от $13 за м²', deck: 'estate-vr' },
-             { n: '360°-тур по шоуруму', d: 'Панорамный тур по шоуруму, офису продаж или готовому дому', p: 'Расчёт под задачу', deck: 'estate-tour' }],
-      note: 'Подготовка интерьера из готовых 3D-моделей — ещё $5 за м². Например, квартира 100 м² — $1 800. Это показ для покупателя, а не дизайн-проект интерьера.' },
-    stand: { cat: 'Продать недвижимость', lead: 'Дизайн буклетов, брошюр, каталогов и другой печати для отдела продаж, выставок и встреч.',
-      rows: [{ n: 'Буклеты и брошюры', d: 'Для отдела продаж, выставок и встреч', p: 'Расчёт под задачу' },
-             { n: 'Каталоги и другая печать', d: 'Листовки, плакаты, баннеры', p: 'Расчёт под задачу' }],
-      note: 'Услуга — дизайн. Изготовление и печать обсуждаем отдельно.' },
+      steps: ['3D-визуализация ЖК', '3D-ролик о ЖК', '3D-планировки', 'Дизайн буклетов и брошюр', '3D-сайт с выбором квартир или интерактивная 3D-программа ЖК'], pack: true },
+    plan3d: { cat: 'Продать недвижимость', lead: 'Планировка квартиры в объёме: стены, мебель и отделка.' },
+    zhk: { cat: 'Продать недвижимость', lead: 'Сенсорный стол в офисе продаж: покупатель сам выбирает корпус, этаж и квартиру, гуляет по ней и меняет отделку.' },
+    web: { cat: 'Реклама для бизнеса', lead: 'Сайт, где продукт, объект или производство можно покрутить в 3D и рассмотреть со всех сторон.' },
+    site: { cat: 'Продать недвижимость', lead: 'Сайт комплекса, где квартиру выбирают по этажам и планировкам.' },
+    vr: { cat: 'Продать недвижимость', lead: 'Покупатель гуляет по будущей квартире или шоуруму, не приезжая на место, — в том числе в VR-шлеме.',
+      rows: [{ n: 'VR-прогулка по квартире', p: 'от $13 за м²', deck: 'estate-vr' },
+             { n: '360°-тур по шоуруму', p: 'Расчёт под задачу', deck: 'estate-tour' }] },
+    stand: { cat: 'Продать недвижимость', lead: 'Дизайн буклетов, брошюр, каталогов и другой печати для отдела продаж, выставок и встреч.' },
     digital: { cat: 'Пакет · Презентовать производство или инфраструктуру', lead: 'Завод, станция или другой объект в цифре — для выставки, встречи и разговора онлайн.',
-      steps: ['Ролик об объекте — 3D-анимация и съёмка с дрона', 'Интерактивный экран — каталог продукции', 'VR и 360°-туры', 'Презентация компании — PDF или интерактивная'], price: 'Состав — под задачу', note: 'Состав пакета уточняем по вашей задаче.', pack: true },
-    factory: { cat: 'Презентовать производство или инфраструктуру', lead: 'Ролик с 3D-анимацией и съёмкой с дрона: как устроен завод, ГЭС, солнечная или ветровая станция, система орошения — и как идёт процесс.',
-      why: 'Партнёры, заказчики и инвесторы понимают сложное за несколько минут, без поездки на объект.',
-      rows: [{ n: '2D-ролик', d: 'Сценарий, графика, схемы, инфографика, озвучка', p: '$800–2 000' }, { n: '3D-ролик', d: 'Анимация объекта и процессов, сценарий, озвучка', p: '$2 000–5 000' }],
-      note: 'Длительность — под задачу. Съёмка с дрона входит. 2 круга правок.' },
-    kiosk: { cat: 'Презентовать производство или инфраструктуру', lead: 'Программа для экрана на выставке, в шоуруме или в офисе: гость сам нажимает и смотрит процессы, оборудование и продукцию.',
-      why: 'Стенд рассказывает о компании, даже когда менеджер занят.',
-      inc: ['Сценарий и структура разделов', 'Дизайн и 3D-графика', 'Программа для сенсорного экрана'],
-      price: 'Расчёт под задачу', note: 'Программа, программа с экраном или под ключ. Оборудование, доставка и монтаж считаются отдельно.' },
-    camera: { cat: 'Реклама для бизнеса', lead: 'Реальная съёмка плюс 3D-графика и сложные визуальные эффекты.',
-      why: 'Для рекламы, где обычной съёмки мало: продукт в необычной среде, сложные сцены.', inc: ['Съёмка', '3D-графика и спецэффекты', 'Монтаж и цвет'],
-      price: '$1 500–4 000', note: 'Состав команды и сцен — в предложении.' },
-    phone: { cat: 'Реклама для бизнеса', lead: 'Ролики на 15–60 секунд для Reels и TikTok: виртуальные персонажи, анимация фото, кинематографичные сцены, показ продукта.',
-      why: 'Регулярный контент для соцсетей без съёмочной команды.', inc: ['Идея и сценарий', 'Генерация и монтаж', 'Музыка или озвучка'],
-      price: 'Расчёт под задачу', note: 'Формат 9:16. Стоимость зависит от длительности, сюжета и объёма генераций — считаем после брифа.' }
+      steps: ['Ролик об объекте', 'Интерактивный экран', 'VR и 360°-туры', 'Презентация компании'], pack: true },
+    factory: { cat: 'Презентовать производство или инфраструктуру', lead: 'Ролик с 3D-анимацией и съёмкой с дрона: как устроен завод, ГЭС, станция или месторождение — и как идёт процесс.',
+      rows: [{ n: '2D-ролик', p: '$800–2 000', deck: 'industry-process' }, { n: '3D-ролик', p: '$2 000–5 000', deck: 'industry-process' }] },
+    kiosk: { cat: 'Презентовать производство или инфраструктуру', lead: 'Программа для сенсорного экрана на выставке, в шоуруме или в офисе: гость сам смотрит процессы и продукцию.' },
+    camera: { cat: 'Реклама для бизнеса', lead: 'Реальная съёмка плюс 3D-графика и сложные визуальные эффекты.', price: '$1 500–4 000' },
+    phone: { cat: 'Реклама для бизнеса', lead: 'Ролики на 15–60 секунд для Reels и TikTok: виртуальные персонажи, анимация фото, необычные сцены.' }
   };
   Object.keys(PART).forEach(function (p) { DATA[p] = DATA[PART[p]]; INFO[p] = INFO[PART[p]]; });
   function sid(id) { return PART[id] || id; }
@@ -189,7 +147,7 @@
   function backHTML() { return '<button type="button" class="dk-p-back" data-goto="' + packCtx + '"><span aria-hidden="true">←</span> Назад к пакету «' + esc(DATA[packCtx].label.replace(/^Пакет «|»$/g, '')) + '»</button>'; }
 
   var stage = document.getElementById('dk-stage'), canvas = document.getElementById('dk-c');
-  var tip = document.getElementById('dk-tip'), tipSvg = document.getElementById('dk-tipline'), chipsEl = document.getElementById('dk-chips');
+  var tip = document.getElementById('dk-tip'), tipSvg = document.getElementById('dk-tipline');
   var tipLine = tipSvg.querySelector('line'), tipDot = tipSvg.querySelector('circle');
   var resetBtn = document.getElementById('dk-reset');
   var tapEl = document.getElementById('dk-tap'), prevBtn = document.getElementById('dk-prev'), nextBtn = document.getElementById('dk-next');
@@ -230,26 +188,33 @@
     else h += '<p class="dk-tip-p' + txt(d.rows[0].p) + '">' + esc(d.rows[0].p) + '</p>';
     return h + GO;
   }
+  /* Презентация услуги «Что это?»: своя у услуги или у первой строки цен; без слайдов кнопку не показываем */
+  function deckFor(id) {
+    var d = DATA[id], k = d.deck || ((d.rows || []).concat(INFO[id].rows || []).map(function (r) { return r.deck; }).filter(Boolean)[0]);
+    return k && slides(k) ? k : null;
+  }
+  var PLAY = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>';
+  /* Цена — только с цифрой («Расчёт под задачу» не пишем: на это есть кнопка «Узнать стоимость») */
+  function priceHTML(f) {
+    var rows = (f.rows || []).filter(function (r) { return /\d/.test(r.p); });
+    if (rows.length > 1) return '<ul class="dk-p-prices">' + rows.map(function (r) { return '<li><span>' + esc(r.n) + '</span><b>' + esc(r.p) + '</b></li>'; }).join('') + '</ul>';
+    var p = f.price && (/\d/.test(f.price) || f.keepPrice) ? f.price : rows.length ? rows[0].p : '';
+    return p ? '<p class="dk-p-price' + txt(p) + '">' + esc(p) + '</p>' : '';
+  }
+  function pickAttr(id) { return BRIEF[id] ? ' data-pick-svc="' + BRIEF[id] + '"' : GOAL[id] ? ' data-pick="' + GOAL[id] + '"' : ''; }
   function panelBody(id) {
-    var d = DATA[id], f = INFO[id], h = '';
+    var f = INFO[id], h = '';
     if (packCtx && packCtx !== id) h += backHTML();
     if (f.lead) h += '<p class="dk-p-lead">' + esc(f.lead) + '</p>';
-    if (f.why) h += '<p class="dk-p-why">' + esc(f.why) + '</p>';
     if (PACK[id] && HAS3D) h += packList(id);
-    else if (f.steps) h +='<p class="dk-p-sub">' + (f.seq ? 'Как собираем' : 'Что входит') + '</p><' + (f.seq ? 'ol class="dk-p-steps"' : 'ul class="dk-p-inc"') + '>' + f.steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + (f.seq ? '</ol>' : '</ul>');
-    if (f.inc) h += '<p class="dk-p-sub">Что входит</p><ul class="dk-p-inc">' + f.inc.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ul>';
-    if (f.rows) h += '<p class="dk-p-sub">Варианты и цены</p><ul class="dk-p-rows">' + f.rows.map(function (r) {
-      var inner = '<span class="dk-n">' + esc(r.n) + '</span><span class="dk-pr' + txt(r.p) + '">' + esc(r.p) + '</span>' + (r.d ? '<span class="dk-d">' + esc(r.d) + '</span>' : '');
-      return '<li>' + (r.deck ? '<a class="dk-p-row" href="' + deckHref(r.deck) + '" data-deck="' + r.deck + '">' + inner + '</a>' : '<div class="dk-p-row">' + inner + '</div>') + '</li>';
-    }).join('') + '</ul>';
-    if (f.price) h += '<p class="dk-p-price' + txt(f.price) + '">' + esc(f.price) + '</p>';
-    if (f.note) h += '<p class="dk-p-note">' + esc(f.note) + '</p>';
-    var num = /\d/.test(f.price || '') || (f.rows || []).some(function (r) { return /\d/.test(r.p); }), calc = f.pack || !num;
-    var msg = (calc ? 'Здравствуйте. Хочу рассчитать стоимость: ' : 'Здравствуйте. Интересует: ') + d.title;
-    var pick = BRIEF[id] ? ' data-pick-svc="' + BRIEF[id] + '"' : GOAL[id] ? ' data-pick="' + GOAL[id] + '"' : '', n = d.deck ? slides(d.deck) : 0;
-    h += '<div class="dk-p-cta"><a class="dk-btn" href="#brief"' + pick + '>' + (calc ? 'Узнать стоимость' : 'Обсудить эту услугу') + '</a>' +
-      (d.deck ? '<a class="dk-p-link" href="' + deckHref(d.deck) + '" data-deck="' + d.deck + '">Что это?</a>' : '') +
-      '<p class="dk-p-contact">Или напишите в <a href="' + WA + encodeURIComponent(msg) + '" target="_blank" rel="noopener">WhatsApp</a> — ответим с 10:00 до 19:00</p></div>';
+    else if (f.steps) h += '<ul class="dk-p-inc">' + f.steps.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ul>';
+    h += priceHTML(f);
+    /* Главная кнопка — презентация на 6 слайдов: там подробности, варианты и бриф. Заявка — второй кнопкой. */
+    var dk = deckFor(id), n = dk ? slides(dk) : 0;
+    h += '<div class="dk-p-cta">' +
+      (dk ? '<a class="dk-deck" href="' + deckHref(dk) + '" data-deck="' + dk + '"><span class="dk-deck-ic">' + PLAY + '</span>' +
+        '<span class="dk-deck-t"><b>Что это?</b><span>Смотреть презентацию · ' + n + ' ' + slidesWord(n) + '</span></span><span class="dk-deck-arr" aria-hidden="true">→</span></a>' : '') +
+      '<a class="dk-btn' + (dk ? ' is-o' : '') + '" href="#brief"' + pickAttr(id) + '>Узнать стоимость</a></div>';
     return h;
   }
   /* Телефон: короткая карточка-путеводитель — пара строк о услуге и кнопки, которые ведут вниз по странице */
@@ -270,8 +235,7 @@
     return Array.prototype.slice.call(document.querySelectorAll('#works [data-svc]')).filter(function (el) { return keys[el.getAttribute('data-svc')] && shown(el); });
   }
   function guideBody(id) {
-    var f = INFO[id], h = '', nump = /\d/.test(f.price || '') || (f.rows || []).some(function (r) { return /\d/.test(r.p); }), calc = f.pack || !nump;
-    var pick = BRIEF[id] ? ' data-pick-svc="' + BRIEF[id] + '"' : GOAL[id] ? ' data-pick="' + GOAL[id] + '"' : '';
+    var f = INFO[id], h = '', pick = pickAttr(id), dk = deckFor(id);
     if (f.lead) h += '<p class="dk-g-lead">' + esc(f.lead) + '</p>';
     /* Пакет: состав — ряд нажимаемых чипов; тап подвозит стол к предмету. У услуги из пакета первым идёт «Назад к пакету». */
     var chips = PACK[id] ? packFlat(id) : null;
@@ -279,9 +243,10 @@
       h += '<div class="dk-g-pack" role="list">' + (chips ? '' : '<button type="button" class="dk-g-chip is-back" data-goto="' + packCtx + '" role="listitem"><span aria-hidden="true">←</span> Назад к пакету</button>') +
         (chips || packFlat(packCtx).filter(function (x) { return x !== id; })).map(function (x) { return '<button type="button" class="dk-g-chip" data-goto="' + x + '" role="listitem"><b>' + num(x) + '</b>' + esc(DATA[x].label) + '</button>'; }).join('') + '</div>';
     }
-    /* две кнопки в одну строку: «Подробнее» (к карточке услуги с ценами и презентацией) и главное действие */
-    return h + '<div class="dk-g-acts">' + (moreTarget(id) ? '<a class="dk-g-btn" href="#" data-go="more">Подробнее' + DOWN + '</a>' : '') +
-      '<a class="dk-btn dk-g-cta" href="#brief"' + pick + '>' + (calc ? 'Узнать стоимость' : 'Обсудить эту услугу') + '</a></div>';
+    /* две кнопки в одну строку: «Что это?» (презентация на 6 слайдов; без неё — «Подробнее», к карточке услуги ниже) и заявка */
+    return h + '<div class="dk-g-acts">' + (dk ? '<a class="dk-g-btn is-deck" href="' + deckHref(dk) + '" data-deck="' + dk + '">' + PLAY + 'Что это?</a>' :
+      moreTarget(id) ? '<a class="dk-g-btn" href="#" data-go="more">Подробнее' + DOWN + '</a>' : '') +
+      '<a class="dk-btn dk-g-cta" href="#brief"' + pick + '>Узнать стоимость</a></div>';
   }
   /* Кнопки карточки прокручивают страницу к карточке услуги или к работам и коротко подсвечивают их */
   function goTo(kind, id) {
@@ -307,57 +272,11 @@
     panelT = setTimeout(function () { if (!panelId) panel.hidden = true; }, REDUCE ? 0 : 450);
   }
 
-  /* Цели посетителя = блоки стола. COLS — колонки легенды под столом: услуги блока по порядку номеров. */
+  /* Цели посетителя = блоки стола */
   var GKEYS = ['invest', 'estate', 'industry', 'ads'];
   var GNAME = { invest: 'Привлечь инвестиции', estate: 'Продать недвижимость', industry: 'Презентовать производство или инфраструктуру', ads: 'Реклама для бизнеса' };
   var GSHORT = { invest: 'Привлечь инвестиции', estate: 'Продать недвижимость', industry: 'Презентовать производство', ads: 'Реклама для бизнеса' };
-  var ZNAME = ['Инвестиции', 'Недвижимость', 'Презентация', 'Реклама'];
-  var COLS = BLOCKS;
   function svcWord(n) { var a = n % 10, b = n % 100; return a === 1 && b !== 11 ? 'услуга' : a >= 2 && a <= 4 && (b < 12 || b > 14) ? 'услуги' : 'услуг'; }
-  var chipGroups = GKEYS.map(function (k, i) {
-    var g = document.createElement('div');
-    g.className = 'dk-chips-z'; g.setAttribute('data-zone', k); g.setAttribute('role', 'group'); g.setAttribute('aria-label', '0' + (i + 1) + ' ' + ZNAME[i]);
-    g.innerHTML = '<p class="dk-chips-h" aria-hidden="true"><b>0' + (i + 1) + '</b>' + ZNAME[i] + '</p>';
-    COLS[k].forEach(function (id) {
-      var b = document.createElement('button');
-      b.type = 'button'; b.className = 'dk-chip'; b.setAttribute('data-o', id);
-      b.innerHTML = '<i aria-hidden="true"></i><span class="dk-chip-n" aria-hidden="true">' + num(id) + '</span>' + esc(DATA[id].label);
-      g.appendChild(b);
-    });
-    chipsEl.appendChild(g);
-    return g;
-  });
-  var chips = Array.prototype.slice.call(chipsEl.querySelectorAll('.dk-chip'));
-  /* Ленточка услуг в одну строку. Края гаснут, когда за ними есть ещё. На компьютере лента листается вслед за мышью:
-     у левого края — начало, у правого — конец. Телефон листает пальцем, как обычно. */
-  var chipGoal = null, chipPos = 0, chipRaf = 0, chipT = 0;
-  function chipEdges() {
-    var m = chipsEl.scrollWidth - chipsEl.clientWidth;
-    chipsEl.classList.toggle('is-more-l', m > 2 && chipsEl.scrollLeft > 2);
-    chipsEl.classList.toggle('is-more-r', m > 2 && chipsEl.scrollLeft < m - 2);
-  }
-  function chipStep(t) {   // плавно, по времени, а не по кадрам: скорость одинаковая на любом экране
-    chipRaf = 0; if (chipGoal === null) { chipT = 0; return; }
-    var dt = chipT ? Math.min(0.25, (t - chipT) / 1000) : 0.016; chipT = t;
-    var d = chipGoal - chipPos;
-    chipPos = Math.abs(d) < 0.5 || REDUCE ? chipGoal : chipPos + d * (1 - Math.exp(-dt * 12));
-    chipsEl.scrollLeft = chipPos;
-    if (chipPos !== chipGoal) chipRaf = requestAnimationFrame(chipStep); else chipT = 0;
-  }
-  chipsEl.addEventListener('scroll', chipEdges, { passive: true });
-  window.addEventListener('resize', chipEdges);
-  if (window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    chipsEl.addEventListener('mouseenter', function () { chipPos = chipsEl.scrollLeft; });
-    chipsEl.addEventListener('mousemove', function (e) {
-      var m = chipsEl.scrollWidth - chipsEl.clientWidth; if (m < 4) return;
-      var r = chipsEl.getBoundingClientRect(), pad = Math.min(140, r.width * 0.14);
-      chipGoal = Math.round(Math.max(0, Math.min(1, (e.clientX - r.left - pad) / Math.max(1, r.width - 2 * pad))) * m);
-      if (!chipRaf) chipRaf = requestAnimationFrame(chipStep);
-    });
-    chipsEl.addEventListener('mouseleave', function () { chipGoal = null; });
-  }
-  chipEdges();
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(chipEdges);
 
   function webgl() { try { var c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl') || c.getContext('experimental-webgl'))); } catch (e) { return false; } }
   var HAS3D = !!window.THREE && webgl();
@@ -456,11 +375,12 @@
     sketch: [-1.92, -1.27, 0], prints: [-1.3, -1.28, 0], tablet: [-0.84, -1.28, 0.04], drone1: [-0.51, -1.26, 1.95],
     book: [-2.02, -0.68, -0.06], finmodel: [-1.6, -0.68, 0.04], present: [-0.8, -0.7, -0.03], portfolio: [-0.48, -0.24, 0],
     zhk: [0.55, -1.3, 0], touch: [1.2, -1.26, 0], site: [1.95, -1.36, 0],
-    vr: [0.5, -0.72, 0.06], prints_e: [1.15, -0.72, 0], tablet_e: [1.62, -0.72, -0.06], plan3d: [2.07, -0.72, -0.1],
+    vr: [0.38, -0.72, 0.06], prints_e: [0.92, -0.72, 0], tablet_e: [1.47, -0.72, -0.06], plan3d: [2.0, -0.72, -0.1],
     stand: [0.42, -0.25, 0], box: [1.94, -0.25, 0],
+    /* блок 03: сзади диорамы; в середине слева — ролик с дроном, справа — презентация; спереди — экран, VR и кнопка пакета */
     dio1: [-2.08, 0.3, 0], dio2: [-1.64, 0.3, 0], dio3: [-1.2, 0.3, 0], dio4: [-0.76, 0.3, 0], dio5: [-0.33, 0.3, 0],
-    factory: [-1.38, 0.76, 0], drone3: [-1.0, 0.74, 1.95],
-    kiosk: [-2.05, 1.17, 0.14], vr_i: [-1.48, 1.18, 0.06], present_i: [-0.94, 1.16, -0.03], digital: [-0.4, 1.4, 0],
+    factory: [-1.82, 0.76, 0], drone3: [-1.44, 0.74, 1.95], present_i: [-0.5, 0.84, -0.03],
+    kiosk: [-2.1, 1.2, 0.14], vr_i: [-1.22, 1.2, 0.06], digital: [-0.4, 1.4, 0],
     imagevid: [0.5, 0.38, 0.04], drone4: [0.86, 0.36, 1.95], clap4: [1.24, 0.4, -0.25], phone: [1.85, 0.36, -0.15],
     web: [0.6, 1.08, 0.12], camera: [1.3, 1.08, -0.4], phonev: [1.74, 1.12, 0.25], subs: [2.05, 1.4, 0]
   };
@@ -849,8 +769,8 @@
     finish(o);
   }
 
-  /* Диорамы объектов на фоне ролика об объекте: завод, ГЭС, ветровая и солнечная станции, орошение. Каждая — на своей подставке. */
-  var DIO = [['dio1', 'factory', 'Завод'], ['dio2', 'hpp', 'ГЭС'], ['dio3', 'wind', 'Ветровая станция'], ['dio4', 'solar', 'Солнечная станция'], ['dio5', 'irrig', 'Орошение']];
+  /* Диорамы объектов на фоне ролика об объекте: завод, ГЭС, ветровая и солнечная станции, нефтедобыча. Каждая — на своей подставке. */
+  var DIO = [['dio1', 'factory', 'Завод'], ['dio2', 'hpp', 'ГЭС'], ['dio3', 'wind', 'Ветровая станция'], ['dio4', 'solar', 'Солнечная станция'], ['dio5', 'pump', 'Нефтедобыча']];
   function buildDio(d) {
     var o = newObject(d[0], 0, 0, 0), g = o.group, b = bodyM(), L = litM(), kind = d[1], y0 = 0.012;
     var water = mat('basic', 0x56687a);
@@ -885,20 +805,83 @@
         cyl(g, 0.0016, 0.0016, 0.012, x, y0, z, b, 6);
       }
       bx(g, 0.03, 0.022, 0.022, 0.095, y0, 0.075, b);
-    } else if (kind === 'irrig') {
-      /* круговое поле с поливальной установкой и канал вдоль края */
-      var field = canvasTex(256, 256, function (c, W, H) {
-        c.fillStyle = '#353a33'; c.fillRect(0, 0, W, H);
-        c.fillStyle = '#566050'; c.beginPath(); c.arc(W / 2, H / 2, W * 0.47, 0, 7); c.fill();
-        c.fillStyle = '#6c7563'; c.beginPath(); c.moveTo(W / 2, H / 2); c.arc(W / 2, H / 2, W * 0.47, -0.4, 1.3); c.closePath(); c.fill();
-        c.strokeStyle = 'rgba(20,22,20,.35)'; c.lineWidth = 2; for (var i = 1; i < 7; i++) { c.beginPath(); c.arc(W / 2, H / 2, W * 0.067 * i, 0, 7); c.stroke(); }
+    } else if (kind === 'pump') {
+      /* Станок-качалка (нефтедобыча): балансир качается на стойке, кривошипы с противовесами вращаются, шатуны тянут хвост
+         балансира, а его головка поднимает и опускает шток над устьем скважины. За устьем — ёмкость и труба к ней. */
+      var red = mat('basic', 0xff0009);
+      var pad = canvasTex(256, 200, function (c, W, H) {
+        c.fillStyle = '#2a2c2f'; c.fillRect(0, 0, W, H);
+        var rnd = seeded(29);
+        for (var i = 0; i < 180; i++) { c.fillStyle = 'rgba(255,255,255,' + (0.02 + rnd() * 0.05).toFixed(3) + ')'; c.fillRect(rnd() * W, rnd() * H, 2, 2); }
+        c.strokeStyle = 'rgba(0,0,0,.35)'; c.lineWidth = 7;
+        c.beginPath(); c.moveTo(0, H * 0.86); c.bezierCurveTo(W * 0.3, H * 0.74, W * 0.62, H * 0.98, W, H * 0.84); c.stroke();
       });
-      noEdge(lay(g, 0.17, 0.17, -0.02, y0 + 0.0008, -0.01, texM(field, 0.9)));
-      cyl(g, 0.006, 0.008, 0.024, -0.02, y0, -0.01, b, 14);
-      var arm = grp(g, -0.02, y0, -0.01, 0.55);
-      bx(arm, 0.08, 0.003, 0.003, 0.04, 0.02, 0, b);
-      [0.03, 0.058, 0.08].forEach(function (x) { cyl(arm, 0.0014, 0.0014, 0.02, x, 0, 0, b, 6); bx(arm, 0.004, 0.004, 0.012, x, 0, 0, b); });
-      noEdge(lay(g, 0.022, 0.19, 0.105, y0 + 0.0009, 0, water));
+      noEdge(lay(g, 0.24, 0.18, 0, y0 + 0.0008, 0, texM(pad, 0.95)));
+      var px = 0, py = y0 + 0.088, R = 0.09, a = 0.066, cx = px - a, cy = y0 + 0.034, rc = 0.014, wx = px + R, Lc = 0.04, L0 = py - cy;
+      bx(g, 0.16, 0.006, 0.05, -0.028, y0, 0, b);                                   // рама
+      bx(g, 0.034, cy + 0.008 - y0 - 0.006, 0.03, cx, y0 + 0.006, 0, b);            // редуктор
+      mesh(rbox(0.024, 0.018, 0.02, 0.004), b, g, cx - 0.036, y0 + 0.006, 0);         // мотор
+      bx(g, 0.04, 0.012, 0.004, cx - 0.018, y0 + 0.012, 0.016, b);                   // кожух ремня
+      /* стойка: по две ноги спереди и сзади, сходятся к подшипнику под балансиром */
+      [-1, 1].forEach(function (s) {
+        [[0.032, 0.004], [-0.03, -0.004]].forEach(function (q) {
+          var x0 = px + q[0], ya = y0 + 0.006, x1 = px + q[1], yb = py - 0.006, dx = x1 - x0, dy = yb - ya;
+          var leg = mesh(new T.BoxGeometry(0.005, Math.hypot(dx, dy), 0.005), b, g, (x0 + x1) / 2, (ya + yb) / 2, s * 0.013);
+          leg.rotation.z = Math.atan2(-dx, dy);
+        });
+      });
+      bx(g, 0.012, 0.008, 0.032, px, py - 0.008, 0, b);
+      var moving = function (q) { q.traverse(function (m) { if (m.isMesh && !m.userData.noEdge) m.userData.rotor = true; }); o.rotors.push(q); return q; };
+      /* балансир с головкой: дуга головки — по окружности вокруг оси качания, поэтому канат над устьем всегда висит отвесно */
+      var beam = grp(g, px, py, 0);
+      bx(beam, 0.15, 0.009, 0.01, (R - 0.01 - a - 0.004) / 2, -0.0045, 0, b);
+      bx(beam, 0.008, 0.008, 0.054, -a, -0.004, 0, b);                               // траверса для шатунов
+      var hs = new T.Shape(), A0 = 0.3, A1 = -0.55;
+      hs.moveTo(R - 0.018, 0.012); hs.lineTo(R * Math.cos(A0), R * Math.sin(A0));
+      hs.absarc(0, 0, R, A0, A1, true);
+      hs.lineTo((R - 0.016) * Math.cos(A1), (R - 0.016) * Math.sin(A1)); hs.closePath();
+      var hg = new T.ExtrudeGeometry(hs, { depth: 0.016, bevelEnabled: false, curveSegments: 16 }); hg.translate(0, 0, -0.008);
+      mesh(hg, b, beam);
+      moving(beam);
+      /* кривошипы с противовесами по бокам редуктора */
+      var cranks = [-1, 1].map(function (s) {
+        var q = grp(g, cx, cy, s * 0.021);
+        bx(q, 0.05, 0.007, 0.004, -0.008, -0.0035, 0, b);
+        var cw = new T.CylinderGeometry(0.024, 0.024, 0.006, 20, 1, false, Math.PI * 1.5 - 0.65, 1.3); cw.rotateX(Math.PI / 2);
+        mesh(cw, b, q);
+        var pin = new T.CylinderGeometry(0.0025, 0.0025, 0.008, 10); pin.rotateX(Math.PI / 2);
+        mesh(pin, b, q, rc, 0, s * 0.003);
+        return moving(q);
+      });
+      var pitm = [-1, 1].map(function (s) { var q = grp(g, 0, 0, s * 0.025); bx(q, 0.004, L0, 0.004, 0, -L0 / 2, 0, b); return moving(q); });
+      /* устье скважины, отвод с красной задвижкой и ёмкость */
+      cyl(g, 0.01, 0.01, 0.004, wx, y0, 0, b, 16);
+      cyl(g, 0.0055, 0.0055, 0.022, wx, y0 + 0.004, 0, b, 14);
+      var pipe = new T.CylinderGeometry(0.0028, 0.0028, 0.046, 10); pipe.rotateX(Math.PI / 2);
+      mesh(pipe, b, g, wx, y0 + 0.012, -0.027);
+      bx(g, 0.009, 0.008, 0.009, wx, y0 + 0.008, -0.026, b);
+      cyl(g, 0.0012, 0.0012, 0.008, wx, y0 + 0.016, -0.026, b, 6);
+      var vw = noEdge(mesh(new T.TorusGeometry(0.0055, 0.0013, 6, 20), red, g, wx, y0 + 0.024, -0.026)); vw.rotation.x = Math.PI / 2;
+      cyl(g, 0.018, 0.018, 0.03, wx, y0, -0.07, b, 24);
+      cyl(g, 0.012, 0.018, 0.006, wx, y0 + 0.03, -0.07, b, 24);
+      /* шток с подвеской и канаты — движутся вслед за головкой */
+      var rod = grp(g, wx, py - Lc, 0);
+      bx(rod, 0.004, 0.004, 0.016, 0, -0.002, 0, b);
+      cyl(rod, 0.0015, 0.0015, 0.03, 0, -0.032, 0, b, 8);
+      moving(rod);
+      var cab = grp(g, wx, py - Lc / 2, 0);
+      [-0.004, 0.004].forEach(function (z) { noEdge(mesh(new T.CylinderGeometry(0.0008, 0.0008, Lc, 6), b, cab, 0, 0, z)); });
+      var ph = 0;
+      var pose = function (dt) {
+        ph += dt * 1.3;
+        var th = Math.asin(-rc * Math.sin(ph) / a), Px = cx + rc * Math.cos(ph), Py = cy + rc * Math.sin(ph);
+        var Ex = px - a * Math.cos(th), Ey = py - a * Math.sin(th), dx = Ex - Px, dy = Ey - Py, ry = py - Lc + R * th;
+        beam.rotation.z = th;
+        cranks.forEach(function (q) { q.rotation.z = ph; });
+        pitm.forEach(function (q) { q.position.x = (Px + Ex) / 2; q.position.y = (Py + Ey) / 2; q.rotation.z = Math.atan2(-dx, dy); q.scale.y = Math.hypot(dx, dy) / L0; });
+        rod.position.y = ry; cab.position.y = (py + ry) / 2; cab.scale.y = (py - ry) / Lc;
+      };
+      pose(0); movers.push(pose);
     }
     contact(g, 0.34, 0.28, 0, 0, 0.45);
     if (!o.rotors.length) delete o.rotors;
@@ -928,7 +911,7 @@
     bx(g, 0.42, 0.0015, 0.024, 0, y0, 0.11, litM(0x5d636c));
     ringTrees(g, [[-0.18, 0.137], [-0.12, 0.137], [-0.06, 0.137]], y0 + 0.0005);
   }
-  var bladeGeo = null, spinners = [];
+  var bladeGeo = null, spinners = [], movers = [];   // movers — свои движения по кадрам (станок-качалка)
   function addTurbine(o, x, z, h, phase, parent, y) {
     var b = bodyM(), t = grp(parent || o.group, x, y || 0, z, -0.3);
     if (!bladeGeo) {
@@ -1237,34 +1220,44 @@
   /* ---------- надписи на столе ----------
      На компьютере у открытого блока название услуги лежит на плите рядом с предметом: номер и название, как печать на столе.
      Надпись нажимается так же, как предмет. На телефоне вместо них — подписи-кнопки над предметами (dk-tag). */
+  /* x, z, ширина места под надпись, выравнивание. Ширина — честная: надпись вместе с номером в неё влезает и на соседей не налезает. */
   var TXT = {
-    sketch: [-1.92, -0.99, 0.62], prints: [-1.3, -0.99, 0.52], tablet: [-0.68, -0.99, 0.62],
+    sketch: [-1.95, -0.99, 0.56], prints: [-1.3, -0.99, 0.6], tablet: [-0.65, -0.99, 0.52],
     book: [-1.8, -0.37, 0.72], present: [-0.8, -0.42, 0.6],
     zhk: [0.85, -0.97, 0.8], site: [1.95, -0.99, 0.62],
-    vr: [0.5, -0.44, 0.5], prints_e: [1.15, -0.44, 0.44], tablet_e: [1.62, -0.44, 0.4], plan3d: [2.07, -0.44, 0.36],
-    stand: [0.78, -0.25, 0.56, 'l'],
-    factory: [-0.8, 0.76, 0.62, 'l'], kiosk: [-2.05, 1.43, 0.46], vr_i: [-1.48, 1.43, 0.46], present_i: [-0.98, 1.43, 0.42],
-    imagevid: [0.85, 0.67, 0.75], phone: [1.85, 0.67, 0.52], web: [0.6, 1.42, 0.62], camera: [1.42, 1.42, 0.56]
+    vr: [0.38, -0.44, 0.42], prints_e: [0.92, -0.44, 0.56], tablet_e: [1.47, -0.44, 0.44], plan3d: [2.0, -0.44, 0.5],
+    stand: [0.78, -0.25, 0.7, 'l'],
+    factory: [-1.26, 0.77, 0.5, 'l'], kiosk: [-2.07, 1.45, 0.56], vr_i: [-1.22, 1.45, 0.46], present_i: [-0.5, 1.1, 0.5],
+    imagevid: [0.85, 0.67, 0.8], phone: [1.85, 0.67, 0.52], web: [0.6, 1.42, 0.8], camera: [1.42, 1.42, 0.62]
   };
-  /* Надписи крупные: 900 точек текстуры на единицу стола. Номер стоит в начале первой строки, серым моноширинным. */
+  /* В блоке «Недвижимость» семь услуг — надписи чуть мельче, чтобы ряд из четырёх подписей не теснился */
+  var TXT_S = { estate: 0.9 };
+  /* Надписи крупные: 900 точек текстуры на единицу стола. Номер стоит слева от названия, серым. */
   var texts = [], titles = [], TPX = 900;
   function textMesh(oid, s, x, z, maxw, opt) {
     opt = opt || {};
-    /* Номер — крупный, тем же шрифтом, высотой в две строки; название — слева от края, рядом с номером */
-    var fs = Math.round((opt.small ? 38 : 46) * (COLUMN ? 0.78 : 1)), lh = Math.round(fs * 1.2), nfs = Math.round(fs * 2.6), pad = 10, al = opt.align || 'c', ns = opt.n || '';
-    var mc = document.createElement('canvas').getContext('2d'), nw = 0;
-    if (ns) { mc.font = '600 ' + nfs + 'px Manrope, sans-serif'; nw = mc.measureText(ns).width + fs * 0.4; }
-    mc.font = '600 ' + fs + 'px Manrope, sans-serif';
-    var maxPx = maxw * TPX - 2 * pad - nw * 0.35, words = s.split(' '), L = [], cur = '';
-    words.forEach(function (w) { var tt = cur ? cur + ' ' + w : w; if (cur && mc.measureText(tt).width > maxPx) { L.push(cur); cur = w; } else cur = tt; });
-    if (cur) L.push(cur);
-    var tw = Math.max.apply(null, L.map(function (l) { return mc.measureText(l).width; })), rows = ns ? Math.max(2, L.length) : L.length;
-    var W = Math.ceil(nw + tw + 2 * pad + 4), H = Math.ceil(rows * lh + 2 * pad);
+    /* Номер — крупнее названия, но не в две строки, как раньше: тот налезал на соседние надписи.
+       Название переносится по словам в свою ширину; если и одно слово не влезает — шрифт мельчает, пока не влезет. */
+    var pad = 10, al = opt.align || 'c', ns = opt.n || '', base = (opt.small ? 38 : 46) * (COLUMN ? 0.78 : 1) * (opt.s || 1), lim = maxw * TPX;
+    var mc = document.createElement('canvas').getContext('2d'), fs, lh, nfs, nw, L, tw;
+    for (var sc = 1; ; sc -= 0.04) {
+      fs = Math.round(base * sc); lh = Math.round(fs * 1.2); nfs = Math.round(fs * 1.75); nw = 0;
+      if (ns) { mc.font = '600 ' + nfs + 'px Manrope, sans-serif'; nw = mc.measureText(ns).width + fs * 0.35; }
+      mc.font = '600 ' + fs + 'px Manrope, sans-serif';
+      var maxPx = lim - 2 * pad - nw, cur = ''; L = [];
+      s.split(' ').forEach(function (w) { var tt = cur ? cur + ' ' + w : w; if (cur && mc.measureText(tt).width > maxPx) { L.push(cur); cur = w; } else cur = tt; });
+      if (cur) L.push(cur);
+      tw = Math.max.apply(null, L.map(function (l) { return mc.measureText(l).width; }));
+      if (tw <= maxPx + 0.5 || sc < 0.6) break;
+    }
+    var rows = L.length, capN = nfs * 0.74, blockH = Math.max(rows * lh, ns ? capN + fs * 0.3 : 0);
+    var W = Math.ceil(nw + tw + 2 * pad + 4), H = Math.ceil(blockH + 2 * pad);
     var t = canvasTex(W, H, function (c, W2, H2) {
       c.clearRect(0, 0, W2, H2); c.textAlign = 'left';
-      var base = pad + fs * 0.95, y0 = ns && L.length === 1 ? base + lh / 2 : base;
-      if (ns) { c.font = '600 ' + nfs + 'px Manrope, sans-serif'; c.fillStyle = '#9aa0a7'; c.fillText(ns, pad, base + lh); }
+      /* номер — по центру высоты названия, строки названия — по центру высоты номера */
+      if (ns) { c.font = '600 ' + nfs + 'px Manrope, sans-serif'; c.fillStyle = '#9aa0a7'; c.fillText(ns, pad, pad + (blockH + capN) / 2); }
       c.font = '600 ' + fs + 'px Manrope, sans-serif'; c.fillStyle = opt.small ? '#a4aab1' : '#f2f1ee';
+      var y0 = pad + (blockH - rows * lh) / 2 + fs * 0.95;
       L.forEach(function (l, i) {
         var x0 = ns ? pad + nw : al === 'l' ? pad : (W2 - c.measureText(l).width) / 2;
         c.fillText(l, x0, y0 + i * lh);
@@ -1302,7 +1295,7 @@
     texts.concat(titles).forEach(function (q) { scene.remove(q.mesh); q.mesh.geometry.dispose(); q.mat.map.dispose(); q.mat.dispose(); });
     pickables = pickables.filter(function (m) { return !m.userData.txt; });
     texts = []; titles = [];
-    Object.keys(TXT).forEach(function (id) { var a = TXT[id]; textMesh(id, DATA[id].label, a[0], a[1], a[2], { n: num(id), align: a[3] }); });
+    Object.keys(TXT).forEach(function (id) { var a = TXT[id]; textMesh(id, DATA[id].label, a[0], a[1], a[2], { n: num(id), align: a[3], s: TXT_S[BLK[id]] }); });
     DIO.forEach(function (d) { var p = objects[d[0]].group.position; textMesh('factory', d[2], p.x, p.z + 0.19, 0.36, { small: true }); });
     GKEYS.forEach(titleMesh);
   }
@@ -1695,12 +1688,23 @@
     camera.aspect = w / h; camera.updateProjectionMatrix();
     var fv = fitView(home.pts, { tx: home.tx, ty: home.ty, tz: home.tz, dist: home.dist, az: 0, el: homeEl(), fov: FOV_DESK }, { x0: -1 + 2 * Math.max(12, sidePad()) / w, x1: 1 - 2 * Math.max(12, sidePad()) / w, y0: -1 + 2 * botPad() / h, y1: 1 - 2 * topPad(0) / h });
     Object.assign(home, { tx: fv.tx, ty: fv.ty, tz: fv.tz, dist: fv.dist, az: 0, el: homeEl(), fov: FOV_DESK });
+    placeAsk(h);
     stage.style.setProperty('--dk-headh', (headZone() + 34) + 'px');
     var mode = railMode() ? 'rail' : 'desk';
     if (mode !== MODE) { MODE = mode; enterMode(); }
     else if (focused) Object.assign(goal, focusView(focused));
     else if (!userMoved) Object.assign(goal, restView());
     invalidate();
+  }
+  /* «Что вам нужно?» на компьютере — не вплотную под подзаголовком, а ниже, в свободной полосе над общим видом стола */
+  function placeAsk(h) {
+    if (!askEl || railMode()) return;
+    var top0 = headZone() + 10, ah = askEl.offsetHeight || 34, y = 1e9;
+    applyCam(home); camera.updateMatrixWorld();
+    home.pts.forEach(function (p) { pv.copy(p).project(camera); y = Math.min(y, (1 - pv.y) / 2 * h); });
+    applyCam(view); camera.updateMatrixWorld();
+    var free = y - top0 - ah;
+    askEl.style.top = Math.round(top0 + Math.max(0, Math.min(free - 28, free * 0.38))) + 'px';
   }
   function enterMode() {
     hovered = null; pinned = null; hideTip(); userMoved = false; tagSize = {};
@@ -1800,9 +1804,8 @@
     stage.classList.add('is-tapped');
     stopHint();
     if (heroEl) heroEl.classList.add('dk-focus');
-    chipOn = null;   // на телефоне лента зоны только что показалась — пусть подкрутится к этой услуге
     openPanel(id); updateFbar(id);
-    if (!HAS3D) { stage.classList.add('is-focus'); syncChips(id); return; }
+    if (!HAS3D) { stage.classList.add('is-focus'); return; }
     hovered = null; pinned = null; hideTip(); clearTimeout(leaveT); clearTimeout(hideT); leaveT = 0;
     stage.classList.add('is-focus', 'is-used'); stage.classList.remove('is-over');
     if (MODE === 'rail') {
@@ -1818,7 +1821,7 @@
     if (!focused) return;
     focused = null; packCtx = null; packHover = null; closePanel(); syncArrows();
     if (heroEl) heroEl.classList.remove('dk-focus');
-    if (!HAS3D) { stage.classList.remove('is-focus'); syncChips(null); return; }
+    if (!HAS3D) { stage.classList.remove('is-focus'); return; }
     stage.classList.remove('is-focus'); flyK = 3.4;
     /* из крупного плана — назад к своему блоку */
     userMoved = false; stage.classList.remove('is-moved'); Object.assign(goal, restView());
@@ -1890,19 +1893,6 @@
   nextBtn.addEventListener('click', function () { stepRow(1); });
   function stopHint() { if (!swipeSeen) { swipeSeen = true; markSeen('swipe'); } }
   function maybeHint() {}
-  var chipOn = null;
-  function syncChips(f) {
-    var key = (f || '') + '|' + (blk || '');
-    if (key === chipOn) return; chipOn = key;
-    return;   // список услуг больше не следит за столом
-    /* под сценой подсвечена колонка текущего блока; на телефоне — только услуги этого блока */
-    var cg = blk ? chipsEl.querySelector('[data-zone="' + blk + '"]') : null;
-    chipGroups.forEach(function (g) { g.classList.toggle('is-cur', g === cg); g.classList.toggle('is-zone', g === cg); });
-    chips.forEach(function (c) {
-      var on = c.getAttribute('data-o') === f; c.classList.toggle('is-on', on);
-      if (on && (MODE === 'rail' || (f === focused && chipGoal === null))) { var box = chipsEl.getBoundingClientRect(), cb = c.getBoundingClientRect(); chipsEl.scrollBy({ left: cb.left - box.left - (box.width - cb.width) / 2, behavior: REDUCE ? 'auto' : 'smooth' }); }
-    });
-  }
 
   /* ---------------- управление ---------------- */
   var ray = T ? new T.Raycaster() : null, ndc = T ? new T.Vector2() : null;
@@ -2060,11 +2050,6 @@
     var t = MODE === 'rail' && !focused && e.target.closest ? e.target.closest('.dk-tag') : null;
     if (t) enterFocus(t.getAttribute('data-o'));
   });
-  chipsEl.addEventListener('click', function (e) {
-    var b = e.target.closest('.dk-chip'); if (!b) return;
-    /* «Наши услуги» под столом со столом не связаны: кнопка ведёт к карточке услуги ниже на странице */
-    goTo('more', b.getAttribute('data-o'));
-  });
   panel.addEventListener('click', function (e) {
     var g = e.target.closest('[data-goto]');
     if (g && focused) { e.preventDefault(); goPack(g.getAttribute('data-goto')); if (e.detail === 0) panel.focus({ preventScroll: true }); return; }
@@ -2080,16 +2065,13 @@
   fPrev.addEventListener('click', function () { stepFocus(-1); });
   fNext.addEventListener('click', function () { stepFocus(1); });
   document.getElementById('dk-f-back').addEventListener('click', function () { exitFocus(); });
-  /* крестик в панели — тоже выход к блоку; с клавиатуры фокус переходит на кнопку этой услуги под сценой */
-  document.getElementById('dk-p-x').addEventListener('click', function (e) {
-    var id = focused; exitFocus();
-    if (e.detail === 0 && id) { var c = chipsEl.querySelector('[data-o="' + id + '"]'); if (c) c.focus({ preventScroll: true }); }
-  });
+  /* крестик в панели — тоже выход к блоку */
+  document.getElementById('dk-p-x').addEventListener('click', function () { exitFocus(); });
   resetBtn.addEventListener('click', function () { userMoved = false; stage.classList.remove('is-moved'); hovered = null; hideTip(); Object.assign(goal, restView()); flyK = 5; invalidate(); });
   document.addEventListener('keydown', function (e) {
     if (document.documentElement.classList.contains('deck-on')) return;
     var tg = (e.target && e.target.tagName || '').toLowerCase(); if (tg === 'input' || tg === 'textarea' || tg === 'select') return;
-    if (e.key === 'Escape') { if (focused) exitFocus(); else if (blk && (stage.contains(document.activeElement) || chipsEl.contains(document.activeElement) || document.activeElement === document.body)) exitBlock(); else if (MODE === 'desk') { hovered = null; hideTip(); invalidate(); } return; }
+    if (e.key === 'Escape') { if (focused) exitFocus(); else if (blk && (stage.contains(document.activeElement) || document.activeElement === document.body)) exitBlock(); else if (MODE === 'desk') { hovered = null; hideTip(); invalidate(); } return; }
     if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
     var dir = e.key === 'ArrowRight' ? 1 : -1;
     if (focused && (panel.contains(document.activeElement) || stage.contains(document.activeElement) || document.activeElement === document.body)) stepFocus(dir);
@@ -2110,8 +2092,8 @@
     });
     if (!moving) flyK = 7;
     var f = focusId();
-    var spun = SPIN && visible && spinners.length > 0;
-    if (spun) spinners.forEach(function (sp) { sp.g.rotation[sp.ax] += dt * sp.v; });
+    var spun = SPIN && visible && (spinners.length > 0 || movers.length > 0);
+    if (spun) { spinners.forEach(function (sp) { sp.g.rotation[sp.ax] += dt * sp.v; }); movers.forEach(function (fn) { fn(dt); }); }
     /* Пакет под курсором или в фокусе: яркий не один предмет, а весь набор — пакет и его состав */
     var S = null;
     if (f && PACK[f]) { S = {}; S[f] = 1; packFlat(f).forEach(function (x) { S[x] = 1; }); }
@@ -2172,7 +2154,6 @@
     if (focused && tip.classList.contains('is-on')) hideTip();
     placeTags(f, S); placeBlocks();
     if (tip.classList.contains('is-on')) placeTip();
-    syncChips(f);
     if (visible) renderer.render(scene, camera);
     needs = false;
     spinOnly = spun && !moving && !dragging;
@@ -2184,7 +2165,7 @@
   }
   if (!HAS3D) {
     stage.classList.remove('is-ready');
-    stage.querySelector('.dk-loading p').textContent = 'Не удалось запустить 3D в этом браузере. Услуги — в списке ниже.';
+    stage.querySelector('.dk-loading p').textContent = 'Не удалось запустить 3D в этом браузере. Все услуги — в разделах ниже.';
     panel.classList.add('is-static');
     return;
   }
