@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0e0f11"/>
+      <stop offset="0.42" stop-color="#16181b"/>
+      <stop offset="0.66" stop-color="#2a2d32"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a2d32"/>
+      <stop offset="0.5" stop-color="#16181b"/>
+      <stop offset="1" stop-color="#0e0f11"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#sky)"/>
+  <path d="M0 610 L150 520 L260 570 L430 430 L560 520 L700 470 L860 560 L1010 450 L1150 530 L1290 480 L1440 560 L1600 520 L1600 662 L0 662 Z" fill="#16181b"/>
+  <path d="M0 662 L0 600 L200 585 L380 615 L560 590 L760 625 L960 598 L1160 628 L1360 600 L1600 618 L1600 662 Z" fill="#0e0f11"/>
+  <rect y="662" width="1600" height="338" fill="url(#water)"/>
+  <path d="M515 662 L1085 662 L1060 626 L540 626 Z" fill="none" stroke="#dbdbdb" stroke-opacity="0.6" stroke-width="2.5" stroke-dasharray="12 9"/>
+  <g stroke="#dbdbdb" stroke-opacity="0.75" stroke-width="2.5">
+    <line x1="528" y1="626" x2="552" y2="626"/>
+    <line x1="540" y1="614" x2="540" y2="638"/>
+    <line x1="1048" y1="626" x2="1072" y2="626"/>
+    <line x1="1060" y1="614" x2="1060" y2="638"/>
+  </g>
+  <g stroke="#dbdbdb" stroke-opacity="0.12" stroke-width="2">
+    <line x1="160" y1="722" x2="420" y2="722"/>
+    <line x1="1120" y1="758" x2="1430" y2="758"/>
+    <line x1="290" y1="836" x2="520" y2="836"/>
+    <line x1="1000" y1="880" x2="1180" y2="880"/>
+  </g>
+</svg>

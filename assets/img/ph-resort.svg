@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0e0f11"/>
+      <stop offset="0.42" stop-color="#16181b"/>
+      <stop offset="0.66" stop-color="#2a2d32"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2a2d32"/>
+      <stop offset="0.5" stop-color="#16181b"/>
+      <stop offset="1" stop-color="#0e0f11"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#dbdbdb" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#dbdbdb" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#sky)"/>
+  <path d="M0 610 L150 520 L260 570 L430 430 L560 520 L700 470 L860 560 L1010 450 L1150 530 L1290 480 L1440 560 L1600 520 L1600 662 L0 662 Z" fill="#16181b"/>
+  <path d="M0 662 L0 600 L200 585 L380 615 L560 590 L760 625 L960 598 L1160 628 L1360 600 L1600 618 L1600 662 Z" fill="#0e0f11"/>
+  <rect y="662" width="1600" height="338" fill="url(#water)"/>
+  <g fill="#0e0f11" stroke="#2a2d32" stroke-width="2" stroke-linejoin="round">
+    <path d="M535 664 L590 556 L645 664 Z"/>
+    <path d="M675 664 L730 556 L785 664 Z"/>
+    <path d="M815 664 L870 556 L925 664 Z"/>
+    <path d="M955 664 L1010 556 L1065 664 Z"/>
+  </g>
+  <g fill="#dbdbdb">
+    <rect x="580" y="616" width="20" height="40" opacity="0.92"/>
+    <rect x="720" y="616" width="20" height="40" opacity="0.7"/>
+    <rect x="860" y="616" width="20" height="40" opacity="0.92"/>
+    <rect x="1000" y="616" width="20" height="40" opacity="0.6"/>
+  </g>
+  <g fill="url(#glow)">
+    <rect x="582" y="672" width="16" height="110"/>
+    <rect x="722" y="672" width="16" height="80"/>
+    <rect x="862" y="672" width="16" height="110"/>
+    <rect x="1002" y="672" width="16" height="70"/>
+  </g>
+  <g stroke="#dbdbdb" stroke-opacity="0.12" stroke-width="2">
+    <line x1="160" y1="722" x2="420" y2="722"/>
+    <line x1="1120" y1="758" x2="1430" y2="758"/>
+    <line x1="290" y1="836" x2="520" y2="836"/>
+    <line x1="1000" y1="880" x2="1180" y2="880"/>
+  </g>
+</svg>

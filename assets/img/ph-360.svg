@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1500" width="1200" height="1500" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <radialGradient id="g" cx="0.5" cy="0.45" r="0.55">
+      <stop offset="0" stop-color="#2a2d32"/>
+      <stop offset="1" stop-color="#0e0f11"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="1500" fill="url(#g)"/>
+  <ellipse cx="600" cy="1220" rx="300" ry="36" fill="#16181b"/>
+  <g fill="none" stroke="#dbdbdb" stroke-width="2.5">
+    <circle cx="600" cy="720" r="400" stroke-opacity="0.9"/>
+    <ellipse cx="600" cy="720" rx="400" ry="110" stroke-opacity="0.6"/>
+    <ellipse cx="600" cy="560" rx="367" ry="100" stroke-opacity="0.35"/>
+    <ellipse cx="600" cy="880" rx="367" ry="100" stroke-opacity="0.35"/>
+    <ellipse cx="600" cy="420" rx="265" ry="72" stroke-opacity="0.25"/>
+    <ellipse cx="600" cy="1020" rx="265" ry="72" stroke-opacity="0.25"/>
+    <ellipse cx="600" cy="720" rx="346" ry="400" stroke-opacity="0.35"/>
+    <ellipse cx="600" cy="720" rx="200" ry="400" stroke-opacity="0.35"/>
+    <ellipse cx="600" cy="720" rx="70" ry="400" stroke-opacity="0.35"/>
+  </g>
+  <g fill="#dbdbdb">
+    <circle cx="470" cy="790" r="9"/>
+    <circle cx="720" cy="640" r="9"/>
+    <circle cx="640" cy="900" r="9"/>
+  </g>
+  <g fill="none" stroke="#dbdbdb" stroke-opacity="0.5" stroke-width="2">
+    <circle cx="470" cy="790" r="24"/>
+    <circle cx="720" cy="640" r="24"/>
+    <circle cx="640" cy="900" r="24"/>
+  </g>
+</svg>

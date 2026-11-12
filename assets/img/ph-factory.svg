@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1500" width="1200" height="1500" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <pattern id="grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M60 0 H0 V60" fill="none" stroke="#2a2d32" stroke-width="1.5"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="1500" fill="#0e0f11"/>
+  <rect width="1200" height="1500" fill="url(#grid)"/>
+  <g fill="#16181b">
+    <path d="M180 900 L180 700 L300 600 L300 700 L420 600 L420 700 L540 600 L540 700 L660 600 L660 900 Z"/>
+    <rect x="880" y="700" width="160" height="200" rx="16"/>
+    <rect x="760" y="420" width="60" height="480"/>
+  </g>
+  <g fill="none" stroke="#dbdbdb" stroke-opacity="0.85" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M180 900 L180 700 L300 600 L300 700 L420 600 L420 700 L540 600 L540 700 L660 600 L660 900"/>
+    <path d="M760 900 L760 420 L820 420 L820 900"/>
+    <rect x="880" y="700" width="160" height="200" rx="16"/>
+    <path d="M880 760 L1040 760"/>
+    <path d="M120 900 L1080 900"/>
+    <path d="M660 780 L760 780"/>
+    <path d="M820 820 L880 820"/>
+    <path d="M200 1080 L1000 1080"/>
+    <circle cx="240" cy="1080" r="20"/>
+    <circle cx="960" cy="1080" r="20"/>
+    <rect x="360" y="1030" width="60" height="50"/>
+    <rect x="560" y="1030" width="60" height="50"/>
+    <rect x="760" y="1030" width="60" height="50"/>
+  </g>
+  <g fill="#dbdbdb" opacity="0.8">
+    <rect x="236" y="790" width="40" height="28"/>
+    <rect x="356" y="790" width="40" height="28"/>
+    <rect x="476" y="790" width="40" height="28"/>
+    <rect x="596" y="790" width="40" height="28" opacity="0.5"/>
+  </g>
+  <g fill="none" stroke="#dbdbdb" stroke-opacity="0.4" stroke-width="3" stroke-dasharray="8 12" stroke-linecap="round">
+    <path d="M790 400 C 770 340, 820 300, 796 230"/>
+    <path d="M300 1180 L880 1180"/>
+  </g>
+  <path d="M870 1166 L900 1180 L870 1194" fill="none" stroke="#dbdbdb" stroke-opacity="0.6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
