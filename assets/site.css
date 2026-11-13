@@ -1253,11 +1253,13 @@ html.wm-on,html.wm-on body{overflow:hidden}
    Компьютер: капсула по центру, на оси «змейки» — пунктир идёт от её низа. Телефон и планшет: карточка, как у услуг. */
 .dsec{--sbg:var(--graphite)}
 .dsec[data-k="estate"],.dsec[data-k="ads"]{--sbg:var(--carbon)}
-.dpack{--ps:clamp(50px,15cqi,64px);display:flex;flex-direction:column;gap:16px;margin-top:calc(var(--ps) / 2);padding:0 18px 20px;background:var(--carbon);border:1px solid var(--steel);border-radius:24px}
+.dpack{--ps:min(116px,calc((100cqi - 78px) / 2.72));display:flex;flex-direction:column;gap:16px;margin-top:calc(var(--ps) / 2);padding:0 18px 20px;background:var(--carbon);border:1px solid var(--steel);border-radius:24px}
 .dsec[data-k="estate"] .dpack,.dsec[data-k="ads"] .dpack{background:var(--graphite)}
-.dpack-stack{display:flex;margin-top:calc(var(--ps) / -2)}
-.dpack-stack img{flex:none;width:var(--ps);height:var(--ps);border-radius:50%;object-fit:cover;background:var(--graphite);box-shadow:0 0 0 1px #3a3e45,0 0 0 5px var(--sbg)}
-.dpack-stack img + img{margin-left:calc(var(--ps) * -.2)}
+/* фото крупные, как у услуг ниже: по картинкам сразу понятно, что в пакете. Телефон: кучкой в два ряда — 3 + 2 (четыре — 2 + 2),
+   ряды и соседние фото чуть заходят друг на друга. Планшет и компьютер — в один ряд */
+.dpack-stack{display:flex;flex-wrap:wrap;justify-content:center;align-self:center;max-width:calc(var(--ps) * 3);margin-top:calc(var(--ps) / -2);padding-bottom:calc(var(--ps) * .12)}
+.dpack-stack[data-n="4"]{max-width:calc(var(--ps) * 2)}
+.dpack-stack img{flex:none;width:var(--ps);height:var(--ps);margin:0 calc(var(--ps) * -.07) calc(var(--ps) * -.12);border-radius:50%;object-fit:cover;background:var(--graphite);box-shadow:0 0 0 1px #3a3e45,0 0 0 5px var(--sbg)}
 .dpack-main{display:flex;flex-direction:column;gap:10px;min-width:0}
 .dpack-k{display:flex;align-items:center;gap:12px;margin:0 0 2px;font:500 11px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--light-grey)}
 .dpack-k img{flex:none;width:32px;height:32px}
@@ -1277,15 +1279,18 @@ html.wm-on,html.wm-on body{overflow:hidden}
 .dsep{margin:0 0 16px;font:500 11px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
 @container page (min-width:700px){
   /* планшет: фото сверху, текст слева, кнопки справа столбиком */
-  .dpack{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:18px 40px;padding:0 28px 26px}
-  .dpack-stack{grid-column:1 / -1}
+  .dpack{--ps:128px;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:18px 40px;padding:0 28px 26px}
+  .dpack-stack,.dpack-stack[data-n="4"]{grid-column:1 / -1;flex-wrap:nowrap;justify-content:flex-start;align-self:auto;justify-self:start;width:max-content;max-width:none;padding-bottom:0}
+  .dpack-stack img{margin:0;box-shadow:0 0 0 1px #3a3e45,0 0 0 6px var(--sbg)}
+  .dpack-stack img + img{margin-left:calc(var(--ps) * -.18)}
   .dpack-acts{flex-direction:column;align-items:stretch}
 }
 @container page (min-width:1000px){
   .dhead{gap:56px;margin-bottom:40px}
-  /* капсула по центру, на оси «змейки»: всё по центру, кнопки в ряд */
-  .dpack{--ps:104px;display:flex;flex-direction:column;align-items:center;gap:14px;justify-self:center;width:min(100%,960px);padding:0 clamp(80px,10cqi,150px) 32px;text-align:center;border-radius:9999px}
-  .dpack-stack img{box-shadow:0 0 0 1px #3a3e45,0 0 0 7px var(--sbg)}
+  /* карточка по центру, на оси «змейки»: скругление — как у концов капсул ниже (с крупными фото полная капсула
+     превращалась в «облако»); фото — как у услуг, 208px; всё по центру, кнопки в ряд */
+  .dpack{--ps:208px;display:flex;flex-direction:column;align-items:center;gap:14px;justify-self:center;width:min(100%,960px);padding:0 clamp(80px,10cqi,150px) 32px;text-align:center;border-radius:84px}
+  .dpack-stack img{box-shadow:0 0 0 1px #3a3e45,0 0 0 8px var(--sbg)}
   .dpack-main{align-items:center}
   .dpack-k{justify-content:center}
   .dpack-d,.dpack-in{text-wrap:balance}
