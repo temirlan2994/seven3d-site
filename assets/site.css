@@ -1514,7 +1514,7 @@ a.dpack-step:hover{border-color:var(--light-grey);background:var(--steel);color:
 .tl-body{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0}
 .tl-h{font:600 16px/1.25 var(--sans);color:var(--white);text-wrap:balance}
 .tl-n{margin-right:.45em;font:400 13px/1 var(--mono);color:#7d838b;font-variant-numeric:tabular-nums}
-.tl-body .txt{font-size:14px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tl-body .txt{font-size:14px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .tl-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:2px}
 .tl-foot .ico{width:18px;height:18px;color:var(--dim);transition:transform .25s var(--ease),color .2s}
 .tl-card:hover{border-color:var(--light-grey)}
