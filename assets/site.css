@@ -229,6 +229,8 @@ img{display:block;max-width:100%}
 /* Нижняя панель на телефоне: выезжает, когда первый экран пройден, и уходит, когда открыта заявка */
 .mbar{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;gap:8px;padding:12px var(--gutr) calc(12px + env(safe-area-inset-bottom,0px)) var(--gut);background:rgba(14,15,17,.96);border-top:1px solid var(--steel);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);transition:transform .45s var(--ease),visibility 0s}
 .mbar .btn-w{flex:1}
+/* самые узкие телефоны (320px): кнопки не вылезают за край */
+@media (max-width:359px){.mbar .btn{padding-inline:14px;font-size:14px}.works .row .btn{white-space:normal;text-align:center}}
 .mbar.is-off{transform:translateY(110%);visibility:hidden;transition:transform .3s var(--ease),visibility 0s .3s}
 @media (max-width:999px){.page{padding-bottom:calc(73px + env(safe-area-inset-bottom,0px))}}
 @media (min-width:1000px){.mbar{display:none}}
@@ -1507,21 +1509,21 @@ a.dpack-step:hover{border-color:var(--light-grey);background:var(--steel);color:
 .dsec[data-k="estate"] .tl-k,.dsec[data-k="ads"] .tl-k{background:var(--carbon)}
 .tl-list{position:relative;z-index:1;list-style:none;margin:0;padding:0;display:grid;gap:18px}
 .tl-step{display:grid;grid-template-columns:minmax(0,1fr);align-items:center}
-.tl-card{position:relative;display:grid;grid-template-columns:64px minmax(0,1fr);grid-template-areas:"img top" "txt txt" "foot foot";align-items:center;gap:12px 14px;min-width:0;padding:14px;background:var(--carbon);border:1px solid var(--steel);border-radius:24px;color:var(--white);text-decoration:none;transition:border-color .2s,box-shadow .35s}
+/* --tlm — размер круглого фото: крупно, чтобы по картинке сразу было понятно, о чём услуга */
+.tl-card{--tlm:clamp(96px,50cqi - 66px,148px);position:relative;display:grid;grid-template-columns:var(--tlm) minmax(0,1fr);grid-template-areas:"img top" "txt txt" "foot foot";align-items:center;gap:12px 14px;min-width:0;padding:14px;background:var(--carbon);border:1px solid var(--steel);border-radius:24px;color:var(--white);text-decoration:none;transition:border-color .2s,box-shadow .35s}
 .dsec[data-k="estate"] .tl-card,.dsec[data-k="ads"] .tl-card{background:var(--graphite)}
-.tl-img{grid-area:img;width:64px;height:64px;border-radius:50%;overflow:hidden;background:var(--graphite);box-shadow:0 0 0 1px #3a3e45;transition:box-shadow .25s}
+.tl-img{grid-area:img;flex:none;width:var(--tlm);height:var(--tlm);border-radius:50%;overflow:hidden;background:var(--graphite);box-shadow:0 0 0 1px #3a3e45;transition:box-shadow .25s}
 .tl-img img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
 .tl-body{display:contents}
 .tl-top{grid-area:top;display:flex;flex-direction:column;gap:5px;min-width:0}
 .tl-n{font:400 12px/1 var(--mono);letter-spacing:.06em;color:var(--dim);font-variant-numeric:tabular-nums}
-.tl-h{font:600 18px/1.2 var(--sans);color:var(--white);text-wrap:balance}
+.tl-h{font:600 clamp(15px,4.4cqi + 1px,18px)/1.2 var(--sans);color:var(--white);text-wrap:balance;overflow-wrap:break-word}
 .tl-body .txt{grid-area:txt;margin:0;font-size:14px;line-height:1.5;color:var(--dim);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .tl-foot{grid-area:foot;display:flex;align-items:center;gap:12px;min-width:0}
-.tl-price{font:400 15px/1.2 var(--mono);color:var(--white);white-space:nowrap}
+.tl-price{margin-top:2px;font:400 14px/1.2 var(--mono);color:var(--light-grey);white-space:nowrap}
 /* кнопка, которую хочется нажать: белая, со стрелкой в тёмном круге */
 .tl-btn{display:inline-flex;align-items:center;justify-content:space-between;gap:12px;flex:1;min-height:46px;padding:0 6px 0 18px;border-radius:9999px;background:var(--white);color:var(--graphite);font:600 14px/1 var(--sans);white-space:nowrap;transition:background-color .2s}
 .tl-btn .ico{flex:none;width:34px;height:34px;padding:8px;border-radius:50%;background:var(--graphite);color:var(--white);transition:transform .25s var(--ease)}
-.tl-price + .tl-btn{flex:0 1 auto;margin-left:auto}
 .tl-card:hover{border-color:var(--light-grey)}
 .tl-card:hover .tl-img{box-shadow:0 0 0 2px var(--red)}
 .tl-card:hover .tl-img img{transform:scale(1.06)}
@@ -1532,26 +1534,30 @@ a.dpack-step:hover{border-color:var(--light-grey);background:var(--steel);color:
 .tl-side{display:none}
 .tl-end{position:relative;z-index:1;margin:34px 0 0}
 @container page (min-width:700px){
-  .tl-card{grid-template-columns:80px minmax(0,1fr);gap:14px 18px;padding:16px 18px}
-  .tl-img{width:80px;height:80px}
+  /* планшет: фото слева, всё остальное столбиком справа */
+  .tl-card{--tlm:168px;display:flex;align-items:center;gap:24px;padding:16px 24px 16px 16px}
+  .tl-body{display:flex;flex-direction:column;align-items:flex-start;gap:10px;flex:1;min-width:0}
+  .tl-foot{margin-top:4px}
   .tl-h{font-size:19px}
   .tl-btn{flex:0 1 auto}
-  .tl-price + .tl-btn{margin-left:8px}
 }
 @container page (min-width:1000px){
   .tl{margin-top:0;padding-top:64px}
   .tl-k{position:absolute;left:0;top:0;margin:0}
-  .tl-list{gap:26px}
+  .tl-list{gap:40px}
   .tl-step{grid-template-columns:minmax(0,1fr) 88px minmax(0,1fr)}
   .tl-step > *{grid-row:1}
   /* капсула: только фото, описание и кнопка; номер и название — снаружи, у линии */
-  .tl-card{display:flex;grid-column:1;justify-self:end;width:min(100%,540px);flex-direction:row-reverse;align-items:center;gap:26px;padding:14px 14px 14px 34px;border-radius:9999px}
+  /* фото-медальон до 210px, выступает за край капсулы; на узких ноутбуках меньше, чтобы кнопка помещалась */
+  .tl-card{--tlm:clamp(124px,50cqi - 376px,210px);grid-column:1;justify-self:end;width:min(100%,600px);flex-direction:row-reverse;gap:26px;padding:14px 14px 14px 34px;border-radius:9999px}
   .tl-step:nth-child(even) .tl-card{grid-column:3;justify-self:start;flex-direction:row;padding:14px 34px 14px 14px}
-  .tl-img{width:124px;height:124px}
+  .tl-img{margin-block:-36px;box-shadow:0 0 0 1px #3a3e45,0 0 0 8px var(--graphite)}
+  .dsec[data-k="estate"] .tl-img,.dsec[data-k="ads"] .tl-img{box-shadow:0 0 0 1px #3a3e45,0 0 0 8px var(--carbon)}
+  .tl-card:hover .tl-img{box-shadow:0 0 0 2px var(--red),0 0 0 8px var(--graphite)}
+  .dsec[data-k="estate"] .tl-card:hover .tl-img,.dsec[data-k="ads"] .tl-card:hover .tl-img{box-shadow:0 0 0 2px var(--red),0 0 0 8px var(--carbon)}
   .tl-body{display:flex;flex-direction:column;align-items:flex-start;gap:14px;flex:1;min-width:0}
-  .tl-top,.tl-price{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .tl-top{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .tl-body .txt{font-size:15px;color:var(--light-grey);-webkit-line-clamp:3}
-  .tl-price + .tl-btn{margin-left:0}
   .tl-side{display:flex;align-items:center;gap:22px;grid-column:3;justify-self:start;min-width:0}
   .tl-step:nth-child(even) .tl-side{grid-column:1;justify-self:end;flex-direction:row-reverse}
   .tl-mark{position:relative;flex:none;width:18px;height:18px;border:2px solid #3a3e45;border-radius:50%;background:var(--graphite);transition:border-color .35s}
