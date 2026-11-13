@@ -1492,3 +1492,64 @@ a.dpack-step:hover{border-color:var(--light-grey);background:var(--steel);color:
 .svc-one{margin:0;max-width:56ch;font-size:17px;line-height:1.55;color:var(--light-grey)}
 .svc-also{align-self:flex-start;min-height:38px;font-size:14px}
 .svc-also .ico-play{stroke:none;fill:var(--red)}
+/* ===== Направления на главной: от пакета вниз уходит «змейка» услуг (референс владельца) =====
+   Телефон и планшет: одна колонка, линия слева проходит через круглые картинки.
+   Компьютер: капсулы по очереди слева и справа, круг — у центра; напротив — отметка на линии и крупный номер.
+   Пунктир рисует скрипт по точкам: от низа плашки пакета через отметки; по мере прокрутки он загорается. */
+.tl{position:relative;margin-top:28px}
+.tl-path{position:absolute;left:0;top:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:0}
+.tl-path path{fill:none;stroke-width:3;stroke-linecap:round;stroke-dasharray:0 10}
+.tl-dots{stroke:#3a3e45}
+.tl-done{stroke:var(--light-grey)}
+.tl-cap{fill:#3a3e45;transition:fill .3s}
+.tl-cap.is-on{fill:var(--light-grey)}
+.tl-k{position:relative;z-index:1;width:fit-content;padding:6px 10px 6px 0;background:var(--graphite)}
+.dsec[data-k="estate"] .tl-k,.dsec[data-k="ads"] .tl-k{background:var(--carbon)}
+.tl-list{position:relative;z-index:1;list-style:none;margin:0;padding:0;display:grid;gap:18px}
+.tl-step{display:grid;grid-template-columns:minmax(0,1fr);align-items:center}
+.tl-card{display:flex;align-items:center;gap:16px;min-width:0;padding:12px 18px 12px 12px;background:var(--carbon);border:1px solid var(--steel);border-radius:28px;color:var(--white);text-decoration:none;transition:border-color .2s,box-shadow .35s}
+.dsec[data-k="estate"] .tl-card,.dsec[data-k="ads"] .tl-card{background:var(--graphite)}
+.tl-img{flex:none;width:76px;height:76px;border-radius:50%;overflow:hidden;background:var(--graphite);box-shadow:0 0 0 1px #3a3e45;transition:box-shadow .25s}
+.tl-img img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
+.tl-body{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0}
+.tl-h{font:600 16px/1.25 var(--sans);color:var(--white);text-wrap:balance}
+.tl-n{margin-right:.45em;font:400 13px/1 var(--mono);color:#7d838b;font-variant-numeric:tabular-nums}
+.tl-body .txt{font-size:14px;line-height:1.45;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.tl-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:2px}
+.tl-foot .ico{width:18px;height:18px;color:var(--dim);transition:transform .25s var(--ease),color .2s}
+.tl-card:hover{border-color:var(--light-grey)}
+.tl-card:hover .tl-img{box-shadow:0 0 0 2px var(--red)}
+.tl-card:hover .tl-img img{transform:scale(1.06)}
+.tl-card:hover .tl-foot .ico{transform:translateX(4px);color:var(--white)}
+.tl-card:focus-visible{outline:2px solid var(--white);outline-offset:3px}
+.tl-card.is-pointed{border-color:var(--white);box-shadow:0 0 0 1px var(--white),0 0 0 7px rgba(255,0,9,.2)}
+.tl-side{display:none}
+.tl-end{position:relative;z-index:1;margin:34px 0 0}
+@container page (min-width:700px){
+  .tl-img{width:96px;height:96px}
+  .tl-card{gap:20px;padding:14px 24px 14px 14px;border-radius:9999px}
+  .tl-h{font-size:17px}
+}
+@container page (min-width:1000px){
+  .tl{margin-top:0;padding-top:64px}
+  .tl-k{position:absolute;left:0;top:0;margin:0}
+  .tl-list{gap:26px}
+  .tl-step{grid-template-columns:minmax(0,1fr) 88px minmax(0,1fr)}
+  .tl-step > *{grid-row:1}
+  .tl-card{grid-column:1;justify-self:end;width:min(100%,560px);flex-direction:row-reverse;gap:24px;padding:14px 14px 14px 34px}
+  .tl-step:nth-child(even) .tl-card{grid-column:3;justify-self:start;flex-direction:row;padding:14px 34px 14px 14px}
+  .tl-img{width:124px;height:124px}
+  .tl-h{font-size:19px}
+  .tl-n{display:none}
+  .tl-side{display:flex;align-items:center;gap:22px;grid-column:3;justify-self:start}
+  .tl-step:nth-child(even) .tl-side{grid-column:1;justify-self:end;flex-direction:row-reverse}
+  .tl-mark{position:relative;flex:none;width:18px;height:18px;border:2px solid #3a3e45;border-radius:50%;background:var(--graphite);transition:border-color .35s}
+  .dsec[data-k="estate"] .tl-mark,.dsec[data-k="ads"] .tl-mark{background:var(--carbon)}
+  .tl-mark::after{content:"";position:absolute;inset:3px;border-radius:50%;background:#3a3e45;transition:background-color .35s}
+  .tl-big{font:400 clamp(52px,4.8cqi,78px)/1 var(--mono);letter-spacing:-.03em;color:#2c2f34;font-variant-numeric:tabular-nums;transition:color .45s}
+  .tl-step.is-on .tl-mark{border-color:var(--red)}
+  .tl-step.is-on .tl-mark::after{background:var(--red)}
+  .tl-step.is-on .tl-big{color:var(--white)}
+  .tl-end{display:flex;justify-content:center;margin-top:64px}
+}
+@media (prefers-reduced-motion:reduce){ .tl-img img,.tl-mark,.tl-mark::after,.tl-big{transition:none} }

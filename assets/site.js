@@ -71,7 +71,7 @@
      по клику страница (на телефоне — карусель) подъезжает к ней. Шаги «только в пакете» не нажимаются. */
   $$('.dpack').forEach(function (pk) {
     var sec = pk.closest('.dsec');
-    var cardOf = function (a) { var k = a && a.getAttribute('data-to'); return k && sec ? $('.gal [data-deck="' + k + '"], .gal [data-card="' + k + '"]', sec) : null; };
+    var cardOf = function (a) { var k = a && a.getAttribute('data-to'); return k && sec ? $('.tl [data-deck="' + k + '"], .tl [data-card="' + k + '"]', sec) : null; };
     var point = function (c, on) { if (c) c.classList.toggle('is-pointed', on); };
     pk.addEventListener('pointerover', function (e) { if (e.pointerType === 'mouse') point(cardOf(e.target.closest('[data-to]')), true); });
     pk.addEventListener('pointerout', function (e) { if (e.pointerType === 'mouse') point(cardOf(e.target.closest('[data-to]')), false); });
@@ -222,6 +222,59 @@
     els.forEach(function (el) { io.observe(el); });
   }
   onEnterOnce($$('[data-gal]'), function (g) { g.classList.add('is-in'); });
+
+  /* Направления на главной: от плашки пакета вниз — «змейка» к услугам.
+     Пунктир строится по точкам: низ пакета → отметки услуг (на телефоне — центры круглых картинок) → точка над ссылкой «Все услуги».
+     По мере прокрутки линия загорается до «линии чтения», пройденные отметки и номера становятся яркими. */
+  var tls = $$('[data-tl]').map(function (tl) {
+    var svg = $('.tl-path', tl), sec = tl.closest('.dsec');
+    return { tl: tl, svg: svg, pack: sec ? $('.dpack', sec) : null, base: $('.tl-dots', svg), done: $('.tl-done', svg), clip: $('clipPath rect', svg),
+      cap: $('.tl-cap', svg), end: $('.tl-end', tl), steps: $$('.tl-step', tl), ys: [], ye: 0 };
+  });
+  if (tls.length) {
+    var tlRaf = 0;
+    var mid = function (el, box) { var r = el.getBoundingClientRect(); return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top }; };
+    var f1 = function (v) { return Math.round(v * 10) / 10; };
+    var tlLayout = function (S) {
+      var box = S.tl.getBoundingClientRect();
+      if (!box.width || !S.steps.length) return;
+      /* компьютер — точки на отметках у номеров; телефон и планшет — в центрах круглых картинок */
+      var m0 = $('.tl-mark', S.steps[0]), desk = !!(m0 && m0.getClientRects().length);
+      var pts = S.steps.map(function (st) { return mid(desk ? $('.tl-mark', st) : $('.tl-img', st), box); });
+      var p0 = { x: pts[0].x, y: pts[0].y - 80 };
+      if (S.pack && S.pack.getClientRects().length) {
+        var pr = S.pack.getBoundingClientRect();
+        p0 = { x: desk ? pr.left + pr.width / 2 - box.left : pts[0].x, y: pr.bottom - box.top };
+      }
+      var pe = { x: desk ? box.width / 2 : pts[pts.length - 1].x, y: S.end.getBoundingClientRect().top - box.top - 16 };
+      var d = 'M' + f1(p0.x) + ' ' + f1(p0.y), prev = p0;
+      pts.concat([pe]).forEach(function (p) {
+        var dy = (p.y - prev.y) / 2;
+        d += ' C' + f1(prev.x) + ' ' + f1(prev.y + dy) + ' ' + f1(p.x) + ' ' + f1(p.y - dy) + ' ' + f1(p.x) + ' ' + f1(p.y);
+        prev = p;
+      });
+      S.base.setAttribute('d', d); S.done.setAttribute('d', d);
+      S.cap.setAttribute('cx', f1(pe.x)); S.cap.setAttribute('cy', f1(pe.y));
+      S.ys = pts.map(function (p) { return p.y; }); S.ye = pe.y;
+    };
+    var tlPaint = function () {
+      tlRaf = 0;
+      var line = window.innerHeight * 0.62;
+      tls.forEach(function (S) {
+        var y = REDUCE ? 1e6 : line - S.tl.getBoundingClientRect().top;
+        S.clip.setAttribute('height', f1(Math.max(0, y + 5000)));
+        S.steps.forEach(function (st, i) { st.classList.toggle('is-on', S.ys[i] <= y); });
+        S.cap.classList.toggle('is-on', S.ye <= y);
+      });
+    };
+    var tlAll = function () { tls.forEach(tlLayout); tlPaint(); };
+    window.addEventListener('scroll', function () { if (!tlRaf) tlRaf = requestAnimationFrame(tlPaint); }, { passive: true });
+    window.addEventListener('resize', tlAll);
+    window.addEventListener('load', tlAll);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(tlAll);
+    if ('ResizeObserver' in window) { var tro = new ResizeObserver(function () { tlAll(); }); tls.forEach(function (S) { tro.observe(S.tl); if (S.pack) tro.observe(S.pack); }); }
+    tlAll();
+  }
 
   /* Счётчики: считают, только если появились при прокрутке */
   function countUp(el) {
