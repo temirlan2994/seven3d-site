@@ -276,6 +276,34 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(tlAll);
     if ('ResizeObserver' in window) { var tro = new ResizeObserver(function () { tlAll(); }); tls.forEach(function (S) { tro.observe(S.tl); if (S.pack) tro.observe(S.pack); }); }
     tlAll();
+    /* Появление по очереди, чтобы глаз шёл за линией: шаг показывается, когда входит в нижнюю часть экрана
+       (сначала номер и название, затем капсула — порядок задан задержками в стилях). Если в кадр попало сразу
+       несколько шагов, они появляются по одному с паузой. Показанный шаг остаётся видимым. */
+    if (!REDUCE && 'IntersectionObserver' in window) {
+      var tlQ = [], tlT = 0;
+      var tlNext = function () {
+        tlT = 0;
+        while (tlQ.length) {
+          var el = tlQ.shift(), r = el.getBoundingClientRect();
+          /* пока ждал очереди, ушёл с экрана — покажем, когда вернётся; паузы только между шагами на экране */
+          if (r.bottom <= 0 || r.top >= window.innerHeight * 0.84) { tio.observe(el); continue; }
+          el.classList.add('is-shown');
+          if (tlQ.length) tlT = setTimeout(tlNext, 340);
+          return;
+        }
+      };
+      var tio = new IntersectionObserver(function (es) {
+        es.filter(function (e) { return e.isIntersecting; })
+          .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; })
+          .forEach(function (e) { tio.unobserve(e.target); tlQ.push(e.target); });
+        if (tlQ.length && !tlT) tlNext();
+      }, { rootMargin: '0px 0px -16% 0px' });
+      tls.forEach(function (S) {
+        S.tl.classList.add('is-anim');
+        S.steps.forEach(function (st) { tio.observe(st); });
+        if (S.end) tio.observe(S.end);
+      });
+    }
   }
 
   /* Счётчики: считают, только если появились при прокрутке */
