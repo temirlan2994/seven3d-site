@@ -1239,7 +1239,7 @@ html.wm-on,html.wm-on body{overflow:hidden}
   .top[data-top].is-deep .logo-full{display:block}
   .top[data-top].is-deep .logo-sign{display:none}
 }
-/* ---------- Секции целей: номер, чередование фона, три факта, плашка пакета в начале ----------
+/* ---------- Секции целей: номер, чередование фона, плашка пакета в начале ----------
    01 и 03 — graphite, 02 и 04 — carbon; граница секции — смена фона во всю ширину. На carbon карточки — graphite с рамкой. */
 .dsec + .dsec{border-top:0}
 .dsec[data-k="estate"],.dsec[data-k="ads"]{background:var(--carbon)}
@@ -1248,40 +1248,49 @@ html.wm-on,html.wm-on body{overflow:hidden}
 .dhead-main{display:flex;flex-direction:column;gap:14px;min-width:0;max-width:760px}
 .dgoal{display:flex;align-items:baseline;gap:14px;margin:0 0 -4px}
 .dnum{font:400 40px/1 var(--mono);color:#3a3e45;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-/* три факта: на телефоне листаются вбок, на планшете и компьютере — в строку */
-.dfacts{list-style:none;display:flex;gap:12px;margin:6px calc(-1 * var(--gutr)) 0 calc(-1 * var(--gut));padding:0 var(--gutr) 2px var(--gut);overflow-x:auto;scrollbar-width:none}
-.dfacts::-webkit-scrollbar{display:none}
-.dfacts li{flex:0 0 auto;display:flex;flex-direction:column;gap:4px;min-width:150px;padding-top:12px;border-top:1px solid var(--steel)}
-.dfacts b{font:400 19px/1.2 var(--mono);color:var(--white);white-space:nowrap}
-.dfacts span{font-size:13px;line-height:1.35;color:var(--dim)}
-/* плашка пакета: название, для кого, что внутри — одной тихой строкой, и кнопки. Сами услуги — ниже, в «змейке»,
-   которая начинается от плашки: заголовок → пакет → услуги по отдельности */
-.dpack{display:flex;flex-direction:column;gap:18px;padding:20px 18px;background:var(--carbon);border:1px solid var(--steel);border-radius:8px}
+/* плашка пакета — в стиле капсул «змейки»: скруглённая, сверху кучкой круглые фото услуг из пакета, под ними название,
+   для кого, что внутри — одной тихой строкой, и белая кнопка со стрелкой в круге, как у услуг ниже.
+   Компьютер: капсула по центру, на оси «змейки» — пунктир идёт от её низа. Телефон и планшет: карточка, как у услуг. */
+.dsec{--sbg:var(--graphite)}
+.dsec[data-k="estate"],.dsec[data-k="ads"]{--sbg:var(--carbon)}
+.dpack{--ps:clamp(50px,15cqi,64px);display:flex;flex-direction:column;gap:16px;margin-top:calc(var(--ps) / 2);padding:0 18px 20px;background:var(--carbon);border:1px solid var(--steel);border-radius:24px}
 .dsec[data-k="estate"] .dpack,.dsec[data-k="ads"] .dpack{background:var(--graphite)}
+.dpack-stack{display:flex;margin-top:calc(var(--ps) / -2)}
+.dpack-stack img{flex:none;width:var(--ps);height:var(--ps);border-radius:50%;object-fit:cover;background:var(--graphite);box-shadow:0 0 0 1px #3a3e45,0 0 0 5px var(--sbg)}
+.dpack-stack img + img{margin-left:calc(var(--ps) * -.2)}
 .dpack-main{display:flex;flex-direction:column;gap:10px;min-width:0}
 .dpack-k{display:flex;align-items:center;gap:12px;margin:0 0 2px;font:500 11px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--light-grey)}
 .dpack-k img{flex:none;width:32px;height:32px}
 .dpack-h{margin:0;font-family:var(--display);font-weight:300;font-size:clamp(22px,6cqi,28px);line-height:1.15;color:var(--white)}
 .dpack-d,.dpack-in,.dhead .lead{text-wrap:pretty}
+.nw{white-space:nowrap}
 .dpack-d{margin:0;font-size:15px;line-height:1.5;color:var(--light-grey)}
 .dpack-in{margin:0;font-size:14px;line-height:1.5;color:var(--dim)}
 .dpack-in b{font-weight:600;color:var(--light-grey)}
 .dpack-in span{white-space:nowrap}
 .dpack-acts{display:flex;flex-wrap:wrap;gap:10px}
-.dpack-acts .btn{min-height:44px;padding:10px 18px;font-size:14px}
+.dpack-acts .btn{min-height:46px;padding:10px 20px;font-size:14px}
+.dpack-acts .dpack-cta{justify-content:space-between;gap:12px;padding:0 6px 0 20px}
+.dpack-cta .ico{flex:none;width:34px;height:34px;padding:8px;border-radius:50%;background:var(--graphite);color:var(--white);transition:transform .25s var(--ease)}
+.dpack-cta:hover .ico{transform:translateX(3px)}
 .dpack.is-pointed{border-color:var(--white);box-shadow:0 0 0 1px var(--white),0 0 0 7px rgba(255,0,9,.2);transition:box-shadow .35s,border-color .35s}
 .dsep{margin:0 0 16px;font:500 11px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
 @container page (min-width:700px){
-  .dfacts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin:6px 0 0;padding:0;overflow:visible}
-  .dfacts li{min-width:0}
-  .dpack{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:20px 40px;padding:26px 28px}
+  /* планшет: фото сверху, текст слева, кнопки справа столбиком */
+  .dpack{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:18px 40px;padding:0 28px 26px}
+  .dpack-stack{grid-column:1 / -1}
   .dpack-acts{flex-direction:column;align-items:stretch}
 }
 @container page (min-width:1000px){
   .dhead{gap:56px;margin-bottom:40px}
-  .dpack{justify-self:center;width:min(100%,880px)}
+  /* капсула по центру, на оси «змейки»: всё по центру, кнопки в ряд */
+  .dpack{--ps:104px;display:flex;flex-direction:column;align-items:center;gap:14px;justify-self:center;width:min(100%,960px);padding:0 clamp(80px,10cqi,150px) 32px;text-align:center;border-radius:9999px}
+  .dpack-stack img{box-shadow:0 0 0 1px #3a3e45,0 0 0 7px var(--sbg)}
+  .dpack-main{align-items:center}
+  .dpack-k{justify-content:center}
+  .dpack-d,.dpack-in{text-wrap:balance}
+  .dpack-acts{flex-direction:row;justify-content:center}
   .dnum{font-size:64px}
-  .dfacts b{font-size:21px}
   .dsep{margin-bottom:20px}
 }
 /* Шаг 7. Строка доверия под первым экраном и пример работы в секции инвестиций */
