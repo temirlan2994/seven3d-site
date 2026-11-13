@@ -1495,7 +1495,7 @@ a.dpack-step:hover{border-color:var(--light-grey);background:var(--steel);color:
 .svc-also{align-self:flex-start;min-height:38px;font-size:14px}
 .svc-also .ico-play{stroke:none;fill:var(--red)}
 /* ===== Направления на главной: от пакета вниз уходит «змейка» услуг (референс владельца) =====
-   Телефон и планшет: в карточке сначала главное — фото и название с номером; под ними серым описание; внизу цена и кнопка.
+   Телефон и планшет: слева вертикальная линия с кружками-номерами; в карточке сначала главное — фото, название и цена; под ними серым описание; внизу кнопка.
    Компьютер: капсулы по очереди слева и справа — фото у центра, описание и кнопка; напротив — отметка на линии, крупный номер и название.
    Пунктир рисует скрипт по точкам: от низа плашки пакета через отметки; по мере прокрутки он загорается. */
 .tl{position:relative;margin-top:28px}
@@ -1508,16 +1508,16 @@ a.dpack-step:hover{border-color:var(--light-grey);background:var(--steel);color:
 .tl-k{position:relative;z-index:1;width:fit-content;padding:6px 10px 6px 0;background:var(--graphite)}
 .dsec[data-k="estate"] .tl-k,.dsec[data-k="ads"] .tl-k{background:var(--carbon)}
 .tl-list{position:relative;z-index:1;list-style:none;margin:0;padding:0;display:grid;gap:18px}
-.tl-step{display:grid;grid-template-columns:minmax(0,1fr);align-items:center}
 /* --tlm — размер круглого фото: крупно, чтобы по картинке сразу было понятно, о чём услуга */
-.tl-card{--tlm:clamp(96px,50cqi - 66px,148px);position:relative;display:grid;grid-template-columns:var(--tlm) minmax(0,1fr);grid-template-areas:"img top" "txt txt" "foot foot";align-items:center;gap:12px 14px;min-width:0;padding:14px;background:var(--carbon);border:1px solid var(--steel);border-radius:24px;color:var(--white);text-decoration:none;transition:border-color .2s,box-shadow .35s}
+.tl-step{--tlm:clamp(88px,55cqi - 100px,168px);display:grid;grid-template-columns:minmax(0,1fr);align-items:center}
+.tl-card{position:relative;display:grid;grid-template-columns:var(--tlm) minmax(0,1fr);grid-template-areas:"img top" "txt txt" "foot foot";align-items:center;gap:12px;min-width:0;padding:12px;background:var(--carbon);border:1px solid var(--steel);border-radius:24px;color:var(--white);text-decoration:none;transition:border-color .2s,box-shadow .35s}
 .dsec[data-k="estate"] .tl-card,.dsec[data-k="ads"] .tl-card{background:var(--graphite)}
 .tl-img{grid-area:img;flex:none;width:var(--tlm);height:var(--tlm);border-radius:50%;overflow:hidden;background:var(--graphite);box-shadow:0 0 0 1px #3a3e45;transition:box-shadow .25s}
 .tl-img img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
 .tl-body{display:contents}
 .tl-top{grid-area:top;display:flex;flex-direction:column;gap:5px;min-width:0}
 .tl-n{font:400 12px/1 var(--mono);letter-spacing:.06em;color:var(--dim);font-variant-numeric:tabular-nums}
-.tl-h{font:600 clamp(15px,4.4cqi + 1px,18px)/1.2 var(--sans);color:var(--white);text-wrap:balance;overflow-wrap:break-word}
+.tl-h{font:600 clamp(15px,4.2cqi,17px)/1.2 var(--sans);color:var(--white);text-wrap:balance;overflow-wrap:break-word}
 .tl-body .txt{grid-area:txt;margin:0;font-size:14px;line-height:1.5;color:var(--dim);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
 .tl-foot{grid-area:foot;display:flex;align-items:center;gap:12px;min-width:0}
 .tl-price{margin-top:2px;font:400 14px/1.2 var(--mono);color:var(--light-grey);white-space:nowrap}
@@ -1533,9 +1533,28 @@ a.dpack-step:hover{border-color:var(--light-grey);background:var(--steel);color:
 .tl-card.is-pointed{border-color:var(--white);box-shadow:0 0 0 1px var(--white),0 0 0 7px rgba(255,0,9,.2)}
 .tl-side{display:none}
 .tl-end{position:relative;z-index:1;margin:34px 0 0}
+@container page (width < 1000px){
+  /* телефон и планшет: слева вертикальная линия, на ней кружки с номерами; от кружка к карточке — короткая черта */
+  .tl-k,.tl-end{margin-left:44px}
+  .tl-step{position:relative;padding-left:44px}
+  .tl-side{display:block;position:absolute;left:0;top:calc(13px + var(--tlm) / 2 - 17px);width:34px;height:34px}
+  .tl-side::after{content:"";position:absolute;left:100%;top:50%;width:10px;height:2px;margin-top:-1px;background:#3a3e45;transition:background-color .35s}
+  .tl-mark{position:absolute;inset:0;border:2px solid #3a3e45;border-radius:50%;background:var(--graphite);transition:border-color .35s}
+  .dsec[data-k="estate"] .tl-mark,.dsec[data-k="ads"] .tl-mark{background:var(--carbon)}
+  .tl-big{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:500 12px/1 var(--mono);color:var(--dim);font-variant-numeric:tabular-nums;transition:color .35s}
+  .tl-name,.tl-n{display:none}
+  .tl-step.is-on .tl-mark{border-color:var(--red)}
+  .tl-step.is-on .tl-big{color:var(--white)}
+  .tl-step.is-on .tl-side::after{background:var(--red)}
+}
+/* самые узкие телефоны: длинные слова в названиях переносим по слогам */
+@container page (width < 360px){ .tl-h{text-wrap:wrap;-webkit-hyphens:auto;hyphens:auto} }
+/* планшет: фото по центру карточки по высоте — кружок с номером тоже */
+@container page (700px <= width < 1000px){ .tl-side{top:calc(50% - 17px)} }
 @container page (min-width:700px){
   /* планшет: фото слева, всё остальное столбиком справа */
-  .tl-card{--tlm:168px;display:flex;align-items:center;gap:24px;padding:16px 24px 16px 16px}
+  .tl-step{--tlm:168px}
+  .tl-card{display:flex;align-items:center;gap:24px;padding:16px 24px 16px 16px}
   .tl-body{display:flex;flex-direction:column;align-items:flex-start;gap:10px;flex:1;min-width:0}
   .tl-foot{margin-top:4px}
   .tl-h{font-size:19px}
@@ -1545,11 +1564,11 @@ a.dpack-step:hover{border-color:var(--light-grey);background:var(--steel);color:
   .tl{margin-top:0;padding-top:64px}
   .tl-k{position:absolute;left:0;top:0;margin:0}
   .tl-list{gap:40px}
-  .tl-step{grid-template-columns:minmax(0,1fr) 88px minmax(0,1fr)}
+  .tl-step{--tlm:clamp(124px,50cqi - 376px,210px);grid-template-columns:minmax(0,1fr) 88px minmax(0,1fr)}
   .tl-step > *{grid-row:1}
   /* капсула: только фото, описание и кнопка; номер и название — снаружи, у линии */
   /* фото-медальон до 210px, выступает за край капсулы; на узких ноутбуках меньше, чтобы кнопка помещалась */
-  .tl-card{--tlm:clamp(124px,50cqi - 376px,210px);grid-column:1;justify-self:end;width:min(100%,600px);flex-direction:row-reverse;gap:26px;padding:14px 14px 14px 34px;border-radius:9999px}
+  .tl-card{grid-column:1;justify-self:end;width:min(100%,600px);flex-direction:row-reverse;gap:26px;padding:14px 14px 14px 34px;border-radius:9999px}
   .tl-step:nth-child(even) .tl-card{grid-column:3;justify-self:start;flex-direction:row;padding:14px 34px 14px 14px}
   .tl-img{margin-block:-36px;box-shadow:0 0 0 1px #3a3e45,0 0 0 8px var(--graphite)}
   .dsec[data-k="estate"] .tl-img,.dsec[data-k="ads"] .tl-img{box-shadow:0 0 0 1px #3a3e45,0 0 0 8px var(--carbon)}

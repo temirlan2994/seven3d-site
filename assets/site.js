@@ -224,7 +224,7 @@
   onEnterOnce($$('[data-gal]'), function (g) { g.classList.add('is-in'); });
 
   /* Направления на главной: от плашки пакета вниз — «змейка» к услугам.
-     Пунктир строится по точкам: низ пакета → отметки услуг (на телефоне — центры круглых картинок) → точка над ссылкой «Все услуги».
+     Пунктир строится по точкам: низ пакета → отметки услуг (на телефоне — кружки с номерами слева) → точка над ссылкой «Все услуги».
      По мере прокрутки линия загорается до «линии чтения», пройденные отметки и номера становятся яркими. */
   var tls = $$('[data-tl]').map(function (tl) {
     var svg = $('.tl-path', tl), sec = tl.closest('.dsec');
@@ -238,9 +238,11 @@
     var tlLayout = function (S) {
       var box = S.tl.getBoundingClientRect();
       if (!box.width || !S.steps.length) return;
-      /* компьютер — точки на отметках у номеров; телефон и планшет — в центрах круглых картинок */
-      var m0 = $('.tl-mark', S.steps[0]), desk = !!(m0 && m0.getClientRects().length);
-      var pts = S.steps.map(function (st) { return mid(desk ? $('.tl-mark', st) : $('.tl-img', st), box); });
+      /* точки — отметки у номеров (на телефоне и планшете это кружки с номерами слева); без отметок — центры картинок.
+         Компьютер: отметки слева и справа — линия-«змейка» от середины пакета; телефон: все на одной вертикали — прямая линия */
+      var m0 = $('.tl-mark', S.steps[0]), marks = !!(m0 && m0.getClientRects().length);
+      var pts = S.steps.map(function (st) { return mid(marks ? $('.tl-mark', st) : $('.tl-img', st), box); });
+      var desk = pts.some(function (p) { return Math.abs(p.x - pts[0].x) > 2; });
       var p0 = { x: pts[0].x, y: pts[0].y - 80 };
       if (S.pack && S.pack.getClientRects().length) {
         var pr = S.pack.getBoundingClientRect();
