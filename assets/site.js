@@ -67,25 +67,6 @@
     }
   }
 
-  /* Плашка пакета в начале секции цели: шаг маршрута при наведении обводит карточку этой услуги ниже,
-     по клику страница (на телефоне — карусель) подъезжает к ней. Шаги «только в пакете» не нажимаются. */
-  $$('.dpack').forEach(function (pk) {
-    var sec = pk.closest('.dsec');
-    var cardOf = function (a) { var k = a && a.getAttribute('data-to'); return k && sec ? $('.tl [data-deck="' + k + '"], .tl [data-card="' + k + '"]', sec) : null; };
-    var point = function (c, on) { if (c) c.classList.toggle('is-pointed', on); };
-    pk.addEventListener('pointerover', function (e) { if (e.pointerType === 'mouse') point(cardOf(e.target.closest('[data-to]')), true); });
-    pk.addEventListener('pointerout', function (e) { if (e.pointerType === 'mouse') point(cardOf(e.target.closest('[data-to]')), false); });
-    pk.addEventListener('click', function (e) {
-      var a = e.target.closest('[data-to]'), c = cardOf(a);
-      if (!a) return;
-      e.preventDefault();
-      if (!c) return;
-      c.scrollIntoView({ behavior: REDUCE ? 'auto' : 'smooth', block: 'center', inline: 'center' });
-      c.classList.remove('is-pointed'); void c.offsetWidth; c.classList.add('is-pointed');
-      setTimeout(function () { c.classList.remove('is-pointed'); }, 3400);
-    });
-  });
-
   /* Копирование номера и почты */
   function selectText(el) { try { var r = document.createRange(); r.selectNodeContents(el); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) { } }
   function copyText(text, btn, fallbackEl, okLabel, failLabel) {
