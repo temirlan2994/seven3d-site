@@ -387,8 +387,14 @@
   /* Телефон: блоки не квадратом 2×2, а в один ряд слева направо — на экране один блок, соседние листаются пальцем или стрелками.
      Сдвигаем плиты, предметы и надписи блока целиком (до постройки сцены); над каждой плитой — её надпись. */
   var COLUMN = false, railIdx = 0, COL_D = { invest: [1.78, -2.05], estate: [-0.68, -0.12], industry: [1.78, 0.16], ads: [-0.68, 2.09] }, COL_T = { invest: 'l', estate: 'l', industry: 'l', ads: 'l' };
+  /* Камера на телефоне ниже, чем на компьютере: высокий предмет второго ряда закрывал надпись первого («Презентационный ролик» за ноутбуком).
+     Поэтому в блоке рекламы ноутбук стоит в заднем ряду, а планшет с роликом и дрон — в переднем; надписи — перед своими предметами.
+     «Бизнес-проект и финмодель» — в две строки: в одну она шире экрана телефона. */
+  var COL_FIX = { lay: { web: [0.6, 0.38, 0.12], imagevid: [0.45, 1.08, 0.04], drone4: [0.82, 1.06, 1.95] }, txt: { web: [0.6, 0.67, 0.72], imagevid: [0.6, 1.42, 0.62], book: [-1.8, -0.37, 0.5] } };
   function columnLayout() {
     COLUMN = true;
+    Object.keys(COL_FIX.lay).forEach(function (id) { LAY[id] = COL_FIX.lay[id].slice(); });
+    Object.keys(COL_FIX.txt).forEach(function (id) { TXT[id] = COL_FIX.txt[id].slice(); });
     GKEYS.forEach(function (k) { var P = PLATES[k], d = COL_D[k]; P.x0 += d[0]; P.x1 += d[0]; P.z0 += d[1]; P.z1 += d[1]; P.tside = COL_T[k]; });
     [LAY, TXT].forEach(function (T0) { Object.keys(T0).forEach(function (id) { var d = COL_D[BLK[id]]; if (d) { T0[id][0] += d[0]; T0[id][1] += d[1]; } }); });
   }
@@ -1294,7 +1300,7 @@
   function buildTexts() {
     texts.concat(titles).forEach(function (q) { scene.remove(q.mesh); q.mesh.geometry.dispose(); q.mat.map.dispose(); q.mat.dispose(); });
     pickables = pickables.filter(function (m) { return !m.userData.txt; });
-    texts = []; titles = [];
+    texts = []; titles = []; txtVer++;
     Object.keys(TXT).forEach(function (id) { var a = TXT[id]; textMesh(id, DATA[id].label, a[0], a[1], a[2], { n: num(id), align: a[3], s: TXT_S[BLK[id]] }); });
     DIO.forEach(function (d) { var p = objects[d[0]].group.position; textMesh('factory', d[2], p.x, p.z + 0.19, 0.36, { small: true }); });
     GKEYS.forEach(titleMesh);
@@ -1646,22 +1652,50 @@
      Камера близко — предметы и названия на столе крупные; стол можно повести пальцем влево-вправо, свайп вниз — следующий блок,
      после четвёртого — обычная прокрутка страницы. */
   var CI = 0, SI = 0;
-  /* Остановки камеры в блоке слева направо: название блока и три участка плиты. Свайп или стрелка — к соседней остановке. */
+  /* Остановки камеры в блоке слева направо: название блока и участки плиты. Свайп или стрелка — к соседней остановке.
+     Участков столько, чтобы каждая надпись блока и кнопка пакета хоть на одной остановке были видны целиком: надписи на телефоне
+     почти во всю ширину экрана, и при трёх равных участках часть из них всегда обрезалась краем кадра. */
+  var STEPS = {}, txtVer = 0, PACK_OF = { invest: 'portfolio', estate: 'box', industry: 'digital', ads: 'subs' };
+  function plateStops(i) {
+    var k = GKEYS[i], P = PLATES[k], items = [], q = new T.Vector3();
+    var v = colView(i, (P.x0 + P.x1) / 2); applyCam(v); camera.updateMatrixWorld();
+    /* камера смотрит прямо, без поворота: ширина кадра на глубине z известна — 0,92 от края до края с запасом под стрелки */
+    var hwAt = function (z) { q.set(v.tx + 1, 0, z).project(camera); return q.x > 0 ? 0.92 / q.x : 1; };
+    texts.forEach(function (t) {
+      if (BLK[t.id] !== k) return;
+      var g = t.mesh.geometry; if (!g.boundingBox) g.computeBoundingBox();
+      var w = g.boundingBox.max.x - g.boundingBox.min.x, h = g.boundingBox.max.y - g.boundingBox.min.y;
+      items.push({ a: t.mesh.position.x - w / 2, b: t.mesh.position.x + w / 2, hw: hwAt(t.mesh.position.z + h / 2) });
+    });
+    var po = objects[PACK_OF[k]];
+    if (po) { var pb = new T.Box3().setFromObject(po.group); items.push({ a: pb.min.x, b: pb.max.x, hw: hwAt(pb.max.z) }); }
+    if (!items.length) return [P.x0 + 0.5, (P.x0 + P.x1) / 2, P.x1 - 0.5];
+    /* у каждой надписи — отрезок положений камеры, где она целиком в кадре; берём как можно меньше остановок,
+       попадающих во все отрезки, и каждую ставим в середину общего участка своих надписей */
+    var iv = items.map(function (it) { var l = it.b - it.hw, r = it.a + it.hw, c = (it.a + it.b) / 2; return l <= r ? { l: l, r: r } : { l: c, r: c }; });
+    iv.sort(function (m, n) { return m.r - n.r; });
+    var gr = [];
+    iv.forEach(function (I) { var g = gr[gr.length - 1]; if (g && I.l <= g.r) g.l = Math.max(g.l, I.l); else gr.push({ l: I.l, r: I.r }); });
+    return gr.map(function (g) { return (g.l + g.r) / 2; });
+  }
   function colSteps(i) {
-    var k = GKEYS[i], P = PLATES[k], T0 = titleOf(k), xs = [P.x0 + 0.5, (P.x0 + P.x1) / 2, P.x1 - 0.5];
+    var k = GKEYS[i], key = k + ':' + stage.clientWidth + 'x' + stage.clientHeight + ':' + headZone() + ':' + txtVer;
+    if (STEPS[key]) return STEPS[key];
+    var P = PLATES[k], T0 = titleOf(k), xs = plateStops(i);
     var tx = T0 ? (T0.pts[0].x + T0.pts[1].x) / 2 : (P.tside === 'l' ? P.x0 - 0.6 : P.x1 + 0.6);
     /* на остановке «название» видны и название, и край плиты с первыми предметами */
-    return P.tside === 'l' ? [tx + 0.3].concat(xs) : xs.concat([tx - 0.3]);
+    return (STEPS[key] = P.tside === 'l' ? [tx + 0.3].concat(xs) : xs.concat([tx - 0.3]));
   }
-  function titleStep(i) { return PLATES[GKEYS[i]].tside === 'l' ? 0 : 3; }
-  /* Кадр: плита по высоте заполняет место под заголовком страницы, камера низко — предметы крупные, в перспективе */
+  function titleStep(i) { return PLATES[GKEYS[i]].tside === 'l' ? 0 : colSteps(i).length - 1; }
+  /* Кадр: плита по высоте заполняет место под заголовком страницы, камера невысоко — предметы крупные, в перспективе.
+     Наклон 0,7, а не ниже: иначе высокий экран-киоск закрывает надпись «Завод» за ним. */
   function colView(i, x) {
     var P = PLATES[GKEYS[i]], h = stage.clientHeight || 500, top = headZone() + 34;
     var pts = [new T.Vector3(x, 0, P.z0 - 0.03), new T.Vector3(x, 0.22, P.z0 + 0.25), new T.Vector3(x - 0.3, 0, P.z1 + 0.03), new T.Vector3(x + 0.3, 0, P.z1 + 0.03)];
-    var v = fitView(pts, { tx: x, ty: 0.03, tz: (P.z0 + P.z1) / 2, dist: 2.4, az: 0, el: 0.62, fov: FOV_RAIL }, { x0: -0.98, x1: 0.98, y0: -0.95, y1: 1 - 2 * top / h });
+    var v = fitView(pts, { tx: x, ty: 0.03, tz: (P.z0 + P.z1) / 2, dist: 2.4, az: 0, el: 0.7, fov: FOV_RAIL }, { x0: -0.98, x1: 0.98, y0: -0.95, y1: 1 - 2 * top / h });
     v.tx = x; return v;
   }
-  function curView() { return colView(CI, colSteps(CI)[SI]); }
+  function curView() { var st = colSteps(CI); SI = clamp(SI, 0, st.length - 1); return colView(CI, st[SI]); }
   function homeView() { return COLUMN ? curView() : home; }
   function restView() { return COLUMN ? curView() : blk ? blockView(blk) : homeView(); }
   function goBlockCol(i) {
@@ -1669,7 +1703,7 @@
     if (blk !== GKEYS[CI]) setBlk(GKEYS[CI]);
     Object.assign(goal, curView()); flyK = 3; syncArrows(); stopHint(); invalidate();
   }
-  function goStep(s) { SI = clamp(s, 0, 3); Object.assign(goal, curView()); flyK = 5; syncArrows(); stopHint(); invalidate(); }
+  function goStep(s) { SI = clamp(s, 0, colSteps(CI).length - 1); Object.assign(goal, curView()); flyK = 5; syncArrows(); stopHint(); invalidate(); }
   function stepRow(dir) { goStep(SI + dir); }
   var colHint = document.createElement('p'); colHint.className = 'dk-colhint'; colHint.hidden = true; stage.appendChild(colHint);
   var COL_ASK = { invest: 'Хотите привлечь инвестиции?', estate: 'Хотите продать недвижимость?', industry: 'Хотите презентовать производство или инфраструктуру?', ads: 'Нужна реклама для бизнеса?' };
@@ -1678,7 +1712,7 @@
     var hh = !(SI === 0 && !focused);
     if (!hh) colHint.innerHTML = '<b>' + COL_ASK[GKEYS[CI]] + '</b><span>Листайте вправо →</span>' + (CI < GKEYS.length - 1 ? '<span class="dk-colhint-d">Вниз — другие направления ↓</span>' : '');
     if (colHint.hidden !== hh) colHint.hidden = hh;
-    var on = !focused, hp = !on || SI <= 0, hn = !on || SI >= 3;
+    var on = !focused, hp = !on || SI <= 0, hn = !on || SI >= colSteps(CI).length - 1;
     if (prevBtn.hidden !== hp) prevBtn.hidden = hp; if (nextBtn.hidden !== hn) nextBtn.hidden = hn;
   }
   function resize() {
@@ -2104,16 +2138,16 @@
       if (Math.abs(op - to) < 0.005) op = to; else moving = true;
       L.material.opacity = op; L.visible = op > 0.001;
     });
-    /* Надписи на столе: видны у открытого блока на компьютере; при наведении на предмет остальные приглушены */
+    /* Надписи на столе: видны у открытого блока (на телефоне — у блока на экране); при наведении на предмет остальные приглушены */
     var tOn = (MODE === 'desk' && !!blk) || COLUMN;
     texts.forEach(function (q) {
       /* у открытого пакета видны названия его состава */
-      var to = tOn && (COLUMN || BLK[q.id] === blk) && (!focused || (S && S[q.id])) ? (f && f !== q.id && !(S && S[q.id]) ? 0.4 : 1) : 0, op = damp(q.mat.opacity, to, R || 9, dt);
+      var to = tOn && BLK[q.id] === blk && (!focused || (S && S[q.id])) ? (f && f !== q.id && !(S && S[q.id]) ? 0.4 : 1) : 0, op = damp(q.mat.opacity, to, R || 9, dt);
       if (Math.abs(op - to) < 0.01) op = to; else moving = true;
       q.mat.opacity = op; q.mesh.visible = op > 0.01;
     });
     titles.forEach(function (q) {
-      var to = (MODE === 'desk' && blk === q.k || COLUMN) && !focused ? 1 : 0, op = damp(q.mat.opacity, to, R || 7, dt);
+      var to = (MODE === 'desk' || COLUMN) && blk === q.k && !focused ? 1 : 0, op = damp(q.mat.opacity, to, R || 7, dt);
       if (Math.abs(op - to) < 0.01) op = to; else moving = true;
       q.mat.opacity = op; q.mesh.visible = op > 0.01;
     });

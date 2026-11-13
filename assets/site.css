@@ -974,7 +974,7 @@ html.wm-on,html.wm-on body{overflow:hidden}
 .dk-tip-cat{display:none;margin:0 0 6px;font:13px/1.3 var(--sans);color:var(--dk-muted)}
 /* телефон: выноска — плашка на линии от предмета: «Наши услуги», номер и название */
 .dk-stage.is-rail .dk-tip{max-width:min(330px,calc(100% - 24px));padding:7px 13px 9px;border-radius:10px;background:rgba(20,21,24,.94);box-shadow:0 10px 26px rgba(0,0,0,.4)}
-.dk-stage.is-rail::before{content:"";position:absolute;left:0;right:0;top:0;z-index:1;height:var(--dk-headh,110px);background:linear-gradient(rgba(14,15,17,.9),rgba(14,15,17,.55) 60%,rgba(14,15,17,0));pointer-events:none;transition:opacity .3s}
+.dk-stage.is-rail::before{content:"";position:absolute;left:0;right:0;top:0;z-index:1;height:var(--dk-headh,110px);background:linear-gradient(rgba(14,15,17,.94),rgba(14,15,17,.9) calc(100% - 34px),rgba(14,15,17,0));pointer-events:none;transition:opacity .3s}
 .dk-stage.is-rail.is-focus::before{opacity:0}
 .dk-stage.is-rail .dk-tip-cat{display:block;margin:0 0 3px;font:12px/1.3 var(--sans);color:var(--dk-muted)}
 .dk-stage.is-rail .dk-tip-h{font:600 15px/1.3 var(--sans)}
@@ -1564,12 +1564,14 @@ a.dpack-step:hover{border-color:var(--light-grey);background:var(--steel);color:
   .tl{margin-top:0;padding-top:64px}
   .tl-k{position:absolute;left:0;top:0;margin:0}
   .tl-list{gap:40px}
-  .tl-step{--tlm:clamp(124px,50cqi - 376px,210px);grid-template-columns:minmax(0,1fr) 88px minmax(0,1fr)}
+  .tl-step{--tlm:clamp(140px,50cqi - 362px,210px);grid-template-columns:minmax(0,1fr) 88px minmax(0,1fr)}
   .tl-step > *{grid-row:1}
   /* капсула: только фото, описание и кнопка; номер и название — снаружи, у линии */
-  /* фото-медальон до 210px, выступает за край капсулы; на узких ноутбуках меньше, чтобы кнопка помещалась */
-  .tl-card{grid-column:1;justify-self:end;width:min(100%,600px);flex-direction:row-reverse;gap:26px;padding:14px 14px 14px 34px;border-radius:9999px}
-  .tl-step:nth-child(even) .tl-card{grid-column:3;justify-self:start;flex-direction:row;padding:14px 34px 14px 14px}
+  /* фото-медальон до 210px, выше капсулы и вплотную к её краю: закруглённый край капсулы целиком прячется за фото,
+     без тонкой дуги рядом с кругом. На узких ноутбуках фото меньше, чтобы кнопка помещалась, а описание — в две строки,
+     чтобы капсула оставалась ниже фото. */
+  .tl-card{grid-column:1;justify-self:end;width:min(100%,600px);flex-direction:row-reverse;gap:26px;padding:14px 0 14px 34px;border-radius:9999px}
+  .tl-step:nth-child(even) .tl-card{grid-column:3;justify-self:start;flex-direction:row;padding:14px 34px 14px 0}
   .tl-img{margin-block:-36px;box-shadow:0 0 0 1px #3a3e45,0 0 0 8px var(--graphite)}
   .dsec[data-k="estate"] .tl-img,.dsec[data-k="ads"] .tl-img{box-shadow:0 0 0 1px #3a3e45,0 0 0 8px var(--carbon)}
   .tl-card:hover .tl-img{box-shadow:0 0 0 2px var(--red),0 0 0 8px var(--graphite)}
@@ -1593,4 +1595,5 @@ a.dpack-step:hover{border-color:var(--light-grey);background:var(--steel);color:
   .tl-step.is-on .tl-name i{color:var(--light-grey)}
   .tl-end{display:flex;justify-content:center;margin-top:64px}
 }
+@container page (1000px <= width < 1100px){ .tl-body .txt{-webkit-line-clamp:2} }
 @media (prefers-reduced-motion:reduce){ .tl-img img,.tl-mark,.tl-mark::after,.tl-big,.tl-name b,.tl-name i,.tl-btn .ico{transition:none} }
