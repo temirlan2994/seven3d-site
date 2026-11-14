@@ -1414,17 +1414,16 @@ html.wm-on,html.wm-on body{overflow:hidden}
 /* ===== Третий документ владельца ===== */
 /* Блок «О студии»: место для ролика о компании и короткий рассказ */
 .vabout{padding-top:clamp(48px,7cqi,104px)}
-.vabout-in{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:clamp(24px,4cqi,64px);align-items:center}
-.vabout-frame{position:relative;display:grid;place-items:center;aspect-ratio:16/9;max-width:100%;border:1px solid var(--steel);border-radius:18px;background:radial-gradient(120% 90% at 30% 20%,#23262b 0%,var(--carbon) 55%,var(--graphite) 100%);overflow:hidden}
+.vabout-in{display:flex;flex-direction:column;align-items:center;gap:clamp(28px,3.5cqi,52px)}
+.vabout-frame{position:relative;display:grid;place-items:center;width:min(100%,1120px);aspect-ratio:16/9;border:1px solid var(--steel);border-radius:18px;background:radial-gradient(120% 90% at 30% 20%,#23262b 0%,var(--carbon) 55%,var(--graphite) 100%);overflow:hidden}
 .vabout-play{display:grid;place-items:center;width:clamp(64px,7cqi,92px);aspect-ratio:1;border-radius:50%;background:var(--white)}
 .vabout-play svg{width:42%;height:42%;margin-left:6%;fill:var(--graphite)}
 .vabout-note{position:absolute;left:18px;bottom:16px;font:500 12px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
-.vabout-txt{display:flex;flex-direction:column;align-items:flex-start;gap:14px;min-width:0}
+.vabout-txt{display:flex;flex-direction:column;align-items:flex-start;gap:14px;width:min(100%,1120px);min-width:0}
 .vabout-k{margin:0;font:500 12px/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
-.vabout-h{margin:0;font:400 clamp(24px,2.6cqi,38px)/1.15 var(--display);color:var(--white);text-wrap:balance}
+.vabout-h{margin:0;max-width:900px;font:400 clamp(24px,2.6cqi,38px)/1.15 var(--display);color:var(--white);text-wrap:balance}
 .vabout-d{margin:0;max-width:62ch;font:400 16px/1.6 var(--sans);color:var(--light-grey)}
 .vabout-txt .btn{margin-top:6px}
-@container page (max-width:899px){ .vabout-in{grid-template-columns:minmax(0,1fr)} }
 /* номер услуги в карточке — тот же, что на столе */
 .gcard .h3 .gcard-n{margin-right:.45em;font-weight:inherit;color:#7d838b;font-variant-numeric:tabular-nums}
 .gal.n7{grid-template-columns:repeat(4,minmax(0,1fr))}
