@@ -1330,20 +1330,19 @@ html.wm-on,html.wm-on body{overflow:hidden}
 }
 .dproof{display:block;margin-top:40px;padding-top:32px;border-top:1px solid var(--steel)}
 .dproof .ba{width:min(100%,1120px);margin-inline:auto;border-radius:18px}
-.dproof-txt{position:absolute;right:clamp(18px,3cqi,38px);bottom:clamp(18px,3cqi,38px);z-index:3;display:flex;flex-direction:column;align-items:flex-start;gap:10px;width:min(430px,calc(100% - 36px));padding:clamp(18px,2.2cqi,28px);border:1px solid rgba(255,255,255,.16);border-radius:16px;background:rgba(14,15,17,.82);box-shadow:0 18px 44px rgba(0,0,0,.36);backdrop-filter:blur(14px);pointer-events:none}
+.dproof-txt{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 32px;align-items:start;width:min(100%,1120px);margin:22px auto 0}
 .dproof-k{margin:0;font:500 11px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
 .dproof-h{margin:0;font:400 24px/1.15 var(--display);color:var(--white)}
 .dproof-d{margin:0;font:400 16px/1.55 var(--sans);color:var(--light-grey);max-width:44ch}
 .dproof-txt .small{margin:0}
-.dproof-txt .btn{margin-top:6px;pointer-events:auto}
+.dproof-txt .btn{grid-column:2;grid-row:1 / 4;align-self:center;margin:0}
 @container page (min-width:700px){
   .dproof-h{font-size:30px}
 }
 @container page (max-width:599px){
-  .dproof-txt{right:12px;bottom:12px;gap:6px;width:min(260px,calc(100% - 24px));padding:12px;border-radius:12px}
-  .dproof-k,.dproof-d{display:none}
+  .dproof-txt{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-top:18px}
   .dproof-h{font-size:18px}
-  .dproof-txt .btn{min-height:40px;margin-top:2px;padding-inline:16px;font-size:13px}
+  .dproof-txt .btn{min-height:40px;margin-top:6px;padding-inline:16px;font-size:13px}
 }
 /* Шаг 8. Телефон: короче «Работы», «Как мы работаем», «О студии» и подвал главной */
 .wmore{display:none}
