@@ -1419,13 +1419,14 @@ html.wm-on,html.wm-on body{overflow:hidden}
 .vabout-play{display:grid;place-items:center;width:clamp(64px,7cqi,92px);aspect-ratio:1;border-radius:50%;background:var(--white)}
 .vabout-play svg{width:42%;height:42%;margin-left:6%;fill:var(--graphite)}
 .vabout-note{position:absolute;left:18px;bottom:16px;font:500 12px/1.4 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
-.vabout-head,.vabout-foot{display:flex;flex-direction:column;align-items:flex-start;width:min(100%,1120px);min-width:0}
-.vabout-head{gap:14px}
-.vabout-foot{gap:16px}
+.vabout-head,.vabout-foot{display:flex;align-items:flex-start;width:min(100%,1120px);min-width:0}
+.vabout-head{flex-direction:column;gap:14px}
+.vabout-foot{align-items:center;justify-content:space-between;gap:24px}
 .vabout-k{margin:0;font:500 12px/1.4 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
 .vabout-h{margin:0;max-width:900px;font:400 clamp(24px,2.6cqi,38px)/1.15 var(--display);color:var(--white);text-wrap:balance}
-.vabout-d{margin:0;max-width:62ch;font:400 16px/1.6 var(--sans);color:var(--light-grey)}
-.vabout-foot .btn{margin-top:2px}
+.vabout-d{margin:0;max-width:none;font:400 16px/1.6 var(--sans);color:var(--light-grey)}
+.vabout-foot .btn{flex:none;margin-top:0}
+@container page (max-width:599px){.vabout-foot{flex-direction:column;align-items:flex-start;gap:16px}}
 /* номер услуги в карточке — тот же, что на столе */
 .gcard .h3 .gcard-n{margin-right:.45em;font-weight:inherit;color:#7d838b;font-variant-numeric:tabular-nums}
 .gal.n7{grid-template-columns:repeat(4,minmax(0,1fr))}
