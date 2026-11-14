@@ -1328,16 +1328,22 @@ html.wm-on,html.wm-on body{overflow:hidden}
   .trust-1 span+span::before{content:none}
   .trust-2{font-size:13px}
 }
-.dproof{display:grid;gap:18px;margin-top:40px;padding-top:32px;border-top:1px solid var(--steel)}
-.dproof-txt{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.dproof{display:block;margin-top:40px;padding-top:32px;border-top:1px solid var(--steel)}
+.dproof .ba{width:min(100%,1120px);margin-inline:auto;border-radius:18px}
+.dproof-txt{position:absolute;right:clamp(18px,3cqi,38px);bottom:clamp(18px,3cqi,38px);z-index:3;display:flex;flex-direction:column;align-items:flex-start;gap:10px;width:min(430px,calc(100% - 36px));padding:clamp(18px,2.2cqi,28px);border:1px solid rgba(255,255,255,.16);border-radius:16px;background:rgba(14,15,17,.82);box-shadow:0 18px 44px rgba(0,0,0,.36);backdrop-filter:blur(14px);pointer-events:none}
 .dproof-k{margin:0;font:500 11px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
 .dproof-h{margin:0;font:400 24px/1.15 var(--display);color:var(--white)}
 .dproof-d{margin:0;font:400 16px/1.55 var(--sans);color:var(--light-grey);max-width:44ch}
 .dproof-txt .small{margin:0}
-.dproof-txt .btn{margin-top:6px}
+.dproof-txt .btn{margin-top:6px;pointer-events:auto}
 @container page (min-width:700px){
-  .dproof{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:40px;align-items:center}
   .dproof-h{font-size:30px}
+}
+@container page (max-width:599px){
+  .dproof-txt{right:12px;bottom:12px;gap:6px;width:min(260px,calc(100% - 24px));padding:12px;border-radius:12px}
+  .dproof-k,.dproof-d{display:none}
+  .dproof-h{font-size:18px}
+  .dproof-txt .btn{min-height:40px;margin-top:2px;padding-inline:16px;font-size:13px}
 }
 /* Шаг 8. Телефон: короче «Работы», «Как мы работаем», «О студии» и подвал главной */
 .wmore{display:none}
@@ -1413,7 +1419,7 @@ html.wm-on,html.wm-on body{overflow:hidden}
 .dk-tipline line{stroke:rgba(255,255,255,.8)}
 /* ===== Третий документ владельца ===== */
 /* Блок «О студии»: место для ролика о компании и короткий рассказ */
-.vabout{padding-top:clamp(48px,7cqi,104px)}
+.vabout{padding:clamp(48px,7cqi,104px) 0;background:var(--carbon)}
 .vabout-in{display:flex;flex-direction:column;align-items:center;gap:clamp(24px,3cqi,40px)}
 .vabout-frame{position:relative;display:grid;place-items:center;width:min(100%,1120px);aspect-ratio:16/9;border:1px solid var(--steel);border-radius:18px;background:radial-gradient(120% 90% at 30% 20%,#23262b 0%,var(--carbon) 55%,var(--graphite) 100%);overflow:hidden}
 .vabout-play{display:grid;place-items:center;width:clamp(64px,7cqi,92px);aspect-ratio:1;border-radius:50%;background:var(--white)}
