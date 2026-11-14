@@ -606,11 +606,13 @@
       '<div class="deck-top"><div class="deck-bars" aria-hidden="true"></div>' +
       '<div class="deck-head"><p class="deck-name" id="deck-name"></p><button class="deck-x" type="button" aria-label="Закрыть презентацию">' + ICO.close + '</button></div></div>' +
       '<div class="deck-body"><div class="deck-slide"></div></div>' +
+      '<button class="deck-step-next" type="button" aria-label="Следующий слайд">' + ICO.arrow + '</button>' +
       '<div class="deck-nav"><button class="deck-prev" type="button"></button><p class="deck-count" aria-live="polite"></p><button class="btn btn-w deck-next" type="button"></button></div></div>';
     document.body.appendChild(dk);
     $('.deck-x', dk).addEventListener('click', function () { closeDeck(false); });
     $('.deck-prev', dk).addEventListener('click', function () { go(-1); });
     $('.deck-next', dk).addEventListener('click', function () { go(1); });
+    $('.deck-step-next', dk).addEventListener('click', function () { go(1); });
     /* Свайп по тексту слайда; по модели — поворот */
     var body = $('.deck-body', dk), sw = null;
     body.addEventListener('pointerdown', function (e) { if (e.pointerType !== 'mouse' && !e.target.closest('.bf')) sw = { x: e.clientX, y: e.clientY }; });
@@ -704,6 +706,10 @@
     prev.disabled = i === 0;
     next.textContent = s.cta || 'Далее';
     next.hidden = s.kind === 'brief';
+    var stepNext = $('.deck-step-next', dk);
+    stepNext.hidden = s.kind === 'brief';
+    stepNext.setAttribute('aria-label', i === n - 1 ? 'Перейти к короткому брифу' : 'Следующий слайд');
+    stepNext.classList.toggle('is-hint', i === 0);
     $('.deck-body', dk).scrollTop = 0;
     requestAnimationFrame(moreHint);
     applyScene(s);

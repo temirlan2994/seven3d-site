@@ -568,6 +568,7 @@ html.deck-on,html.deck-on body{overflow:hidden}
 .deck-prev.is-off{visibility:hidden}
 .deck-count{margin:0;font-family:var(--mono);font-size:12px;color:var(--dim)}
 .deck-next{min-width:150px}
+.deck-step-next{display:none}
 .deck .bf{padding:0;background:none;border:0;border-radius:0;gap:18px}
 .deck .bf-bars{display:none}
 .deck .bf-top{justify-content:flex-start}
@@ -598,7 +599,18 @@ html.deck-on,html.deck-on body{overflow:hidden}
   .deck-big{font-size:clamp(28px,2.6cqi,38px)}
   .deck-nav{grid-row:3;justify-content:flex-start;gap:28px;padding:0 48px 34px;border-top:0;background:none}
   .deck-count{order:2}
+  .deck-step-next{position:absolute;z-index:5;left:44%;top:52%;display:grid;place-items:center;width:58px;height:58px;padding:0;border:1px solid var(--red);border-radius:50%;background:var(--red);color:var(--white);cursor:pointer;box-shadow:0 10px 32px rgba(0,0,0,.28);transform:translate(-50%,-50%);transition:background-color .18s,border-color .18s,transform .18s}
+  .deck-step-next:hover{background:var(--white);border-color:var(--white);color:var(--graphite);transform:translate(-50%,-50%) scale(1.06)}
+  .deck-step-next:active{transform:translate(-50%,-50%) scale(.97)}
+  .deck-step-next:focus-visible{outline:2px solid var(--white);outline-offset:4px}
+  .deck-step-next[hidden]{display:none}
+  .deck-step-next .ico{width:22px;height:22px;transition:transform .18s}
+  .deck-step-next:hover .ico{transform:translateX(2px)}
+  .deck-step-next.is-hint{animation:deck-step-hint 1.7s var(--ease) 2}
 }
+
+@keyframes deck-step-hint{0%,100%{box-shadow:0 10px 32px rgba(0,0,0,.28)}50%{box-shadow:0 10px 32px rgba(0,0,0,.28),0 0 0 10px rgba(255,31,36,.14)}}
+@media (prefers-reduced-motion:reduce){.deck-step-next.is-hint{animation:none}}
 
 /* ---------- Бриф: полоса «сколько осталось» и галочки ---------- */
 .bf-prog{display:flex;flex-direction:column;gap:8px}
