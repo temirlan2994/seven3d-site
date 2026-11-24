@@ -22,11 +22,11 @@
     menu.addEventListener('click', function (e) { if (e.target.closest('a')) { burger.setAttribute('aria-expanded', 'false'); burger.setAttribute('aria-label', 'Меню'); menu.hidden = true; } });
   }
 
-  /* Шапка закреплена на всей странице главной: текущий раздел подсвечен, по нижнему краю — линия прокрутки.
+  /* Шапка закреплена на всей странице главной: текущий раздел подсвечен.
      Телефон: в шапке «02 / 09 · Недвижимость»; тап по строке открывает меню — карту страницы. */
   var topEl = $('[data-top]');
   if (topEl) {
-    var spyLinks = $$('[data-spy]', topEl), progI = $('.top-prog i', topEl), where = $('.top-where', topEl);
+    var spyLinks = $$('[data-spy]', topEl), where = $('.top-where', topEl);
     var spyIds = [], spyHas = {};
     spyLinks.forEach(function (a) { var id = a.getAttribute('data-spy'); if (!spyHas[id]) { spyHas[id] = 1; spyIds.push(id); } });
     var spyNames = { 'd-invest': 'Инвестиции', 'd-estate': 'Недвижимость', 'd-industry': 'Презентация', 'd-ads': 'Реклама', process: 'Как работаем', works: 'Работы', about: 'О студии', faq: 'Вопросы', brief: 'Заявка' };
@@ -34,12 +34,20 @@
     var spySecs = spyIds.map(function (id) { var el = document.getElementById(id); return el && el.classList.contains('anc') ? el.parentNode : el; });
     var spyOn, spyRaf = 0;
 
-    /* Карта страницы слева: кружок на каждый раздел, линия заполняется по мере прокрутки.
-       Текущий раздел — красный кружок, соседние плавно уменьшаются с расстоянием («лупа»).
-       При входе в новый раздел рядом с кружком ненадолго видно его название; при наведении — все названия.
-       Видна только на широких экранах, где слева от контента есть свободное поле. */
-    var rail = null, railFill = null, railNodes = [], railMoveT = 0, railRef = $('.dsec .wrap') || $('main .wrap');
+    /* Карта страницы слева — структура главной в трёх группах:
+       4 направления (крупные остановки) · справочные разделы (мелкие точки) · заявка (красная точка в конце).
+       Текущий раздел — красный кружок, соседние плавно уменьшаются с расстоянием («лупа»),
+       линия заполняется по мере прокрутки. При входе в раздел ненадолго видно его название, при наведении — все.
+       На больших мониторах, где слева много места, названия направлений и заявки видны всегда.
+       Видна только там, где слева от контента есть свободное поле. */
+    var railKind = function (id) { return id === 'brief' ? 'cta' : /^d-/.test(id) ? 'main' : 'minor'; };
+    var railLabel = { brief: 'Обсудить проект' };
+    var rail = null, railFill = null, railNodes = [], railU = [], railMoveT = 0, railRef = $('.dsec .wrap') || $('main .wrap');
     if (spyIds.length > 1) {
+      /* позиции на линии: равный шаг, между группами — дополнительный промежуток */
+      var GAP = 0.9, u = 0;
+      spyIds.forEach(function (id, i) { if (i && railKind(id) !== railKind(spyIds[i - 1])) u += GAP; railU.push(u); u += 1; });
+      var U = railU[railU.length - 1];
       rail = document.createElement('div');
       rail.className = 'rail';
       rail.setAttribute('aria-hidden', 'true');
@@ -47,11 +55,11 @@
       railFill = $('.rail-fill', rail);
       railNodes = spyIds.map(function (id, i) {
         var a = document.createElement('a');
-        a.className = 'rail-n';
+        a.className = 'rail-n rail-' + railKind(id);
         a.href = '#' + id;
         a.tabIndex = -1;
-        a.style.top = (i / (spyIds.length - 1) * 100).toFixed(3) + '%';
-        a.innerHTML = '<b></b><span><em>' + (i < 9 ? '0' : '') + (i + 1) + '</em>' + esc(spyNames[id] || '') + '</span>';
+        a.style.top = (railU[i] / U * 100).toFixed(3) + '%';
+        a.innerHTML = '<b></b><span><em>' + (i < 9 ? '0' : '') + (i + 1) + '</em>' + esc(railLabel[id] || spyNames[id] || '') + '</span>';
         rail.appendChild(a);
         return a;
       });
@@ -59,9 +67,16 @@
     }
     var railFit = function () {
       if (!rail) return;
-      var gap = railRef ? railRef.getBoundingClientRect().left + 10 : 0;
-      rail.style.setProperty('--x', Math.round(gap / 2) + 'px');
+      var gap = railRef ? railRef.getBoundingClientRect().left + 10 : 0, roomy = gap >= 240;
+      /* с постоянными подписями линия сдвигается влево, чтобы подписи не заходили на контент */
+      rail.style.setProperty('--x', Math.round(roomy ? Math.min(gap / 2, gap - 200) : gap / 2) + 'px');
       rail.classList.toggle('is-fit', gap >= 48 && window.innerHeight >= 520);
+      rail.classList.toggle('is-roomy', roomy);
+    };
+    /* точка на линии для дробного номера раздела: между соседними кружками — линейно */
+    var railAt = function (x) {
+      var n = railU.length, k = Math.min(n - 1, Math.max(0, x)), i = Math.min(n - 2, Math.floor(k));
+      return (railU[i] + (railU[i + 1] - railU[i]) * (k - i)) / railU[n - 1];
     };
     var railDraw = function (tops, cur, line, y, max) {
       var n = railNodes.length, pos = -1;
@@ -72,7 +87,7 @@
         pos = cur + Math.min(1, Math.max(0, (line - start) / Math.max(1, end - start))) * (cur + 1 < n ? 1 : 0.5);
       }
       rail.classList.toggle('is-on', cur >= 0);
-      railFill.style.transform = 'scaleY(' + Math.min(1, Math.max(0, (pos - 0.5) / (n - 1))).toFixed(4) + ')';
+      railFill.style.transform = 'scaleY(' + (cur >= 0 ? railAt(pos - 0.5) : 0).toFixed(4) + ')';
       railNodes.forEach(function (a, i) {
         var s = Math.max(0, 1 - Math.abs(pos - (i + 0.5)) / 2.2);
         a.style.setProperty('--s', s.toFixed(3));
@@ -87,8 +102,6 @@
       var y = window.pageYOffset || de.scrollTop, max = Math.max(1, de.scrollHeight - vh);
       var tops = spySecs.map(function (s) { return s ? s.getBoundingClientRect().top : Infinity; });
       tops.forEach(function (t, i) { if (t <= line) cur = i; });
-      var p = Math.min(1, Math.max(0, y / max));
-      if (progI) progI.style.transform = 'scaleX(' + p.toFixed(4) + ')';
       if (rail) railDraw(tops, cur, line, y, max);
       var id = cur >= 0 ? spyIds[cur] : null;
       if (id === spyOn) return;
@@ -261,89 +274,6 @@
     els.forEach(function (el) { io.observe(el); });
   }
   onEnterOnce($$('[data-gal]'), function (g) { g.classList.add('is-in'); });
-
-  /* Направления на главной: от плашки пакета вниз — «змейка» к услугам.
-     Пунктир строится по точкам: низ пакета → отметки услуг (на телефоне — кружки с номерами слева) → точка над ссылкой «Все услуги».
-     По мере прокрутки линия загорается до «линии чтения», пройденные отметки и номера становятся яркими. */
-  var tls = $$('[data-tl]').map(function (tl) {
-    var svg = $('.tl-path', tl), sec = tl.closest('.dsec');
-    return { tl: tl, svg: svg, pack: sec ? $('.dpack', sec) : null, base: $('.tl-dots', svg), done: $('.tl-done', svg), clip: $('clipPath rect', svg),
-      cap: $('.tl-cap', svg), end: $('.tl-end', tl), steps: $$('.tl-step', tl), ys: [], ye: 0 };
-  });
-  if (tls.length) {
-    var tlRaf = 0;
-    var mid = function (el, box) { var r = el.getBoundingClientRect(); return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top }; };
-    var f1 = function (v) { return Math.round(v * 10) / 10; };
-    var tlLayout = function (S) {
-      var box = S.tl.getBoundingClientRect();
-      if (!box.width || !S.steps.length) return;
-      /* точки — отметки у номеров (на телефоне и планшете это кружки с номерами слева); без отметок — центры картинок.
-         Компьютер: отметки слева и справа — линия-«змейка» от середины пакета; телефон: все на одной вертикали — прямая линия */
-      var m0 = $('.tl-mark', S.steps[0]), marks = !!(m0 && m0.getClientRects().length);
-      var pts = S.steps.map(function (st) { return mid(marks ? $('.tl-mark', st) : $('.tl-img', st), box); });
-      var desk = pts.some(function (p) { return Math.abs(p.x - pts[0].x) > 2; });
-      var p0 = { x: pts[0].x, y: pts[0].y - 80 };
-      if (S.pack && S.pack.getClientRects().length) {
-        var pr = S.pack.getBoundingClientRect();
-        p0 = { x: desk ? pr.left + pr.width / 2 - box.left : pts[0].x, y: pr.bottom - box.top };
-      }
-      var pe = { x: desk ? box.width / 2 : pts[pts.length - 1].x, y: S.end.getBoundingClientRect().top - box.top - 16 };
-      var d = 'M' + f1(p0.x) + ' ' + f1(p0.y), prev = p0;
-      pts.concat([pe]).forEach(function (p) {
-        var dy = (p.y - prev.y) / 2;
-        d += ' C' + f1(prev.x) + ' ' + f1(prev.y + dy) + ' ' + f1(p.x) + ' ' + f1(p.y - dy) + ' ' + f1(p.x) + ' ' + f1(p.y);
-        prev = p;
-      });
-      S.base.setAttribute('d', d); S.done.setAttribute('d', d);
-      S.cap.setAttribute('cx', f1(pe.x)); S.cap.setAttribute('cy', f1(pe.y));
-      S.ys = pts.map(function (p) { return p.y; }); S.ye = pe.y;
-    };
-    var tlPaint = function () {
-      tlRaf = 0;
-      var line = window.innerHeight * 0.62;
-      tls.forEach(function (S) {
-        var y = REDUCE ? 1e6 : line - S.tl.getBoundingClientRect().top;
-        S.clip.setAttribute('height', f1(Math.max(0, y + 5000)));
-        S.steps.forEach(function (st, i) { st.classList.toggle('is-on', S.ys[i] <= y); });
-        S.cap.classList.toggle('is-on', S.ye <= y);
-      });
-    };
-    var tlAll = function () { tls.forEach(tlLayout); tlPaint(); };
-    window.addEventListener('scroll', function () { if (!tlRaf) tlRaf = requestAnimationFrame(tlPaint); }, { passive: true });
-    window.addEventListener('resize', tlAll);
-    window.addEventListener('load', tlAll);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(tlAll);
-    if ('ResizeObserver' in window) { var tro = new ResizeObserver(function () { tlAll(); }); tls.forEach(function (S) { tro.observe(S.tl); if (S.pack) tro.observe(S.pack); }); }
-    tlAll();
-    /* Появление по очереди, чтобы глаз шёл за линией: шаг показывается, когда входит в нижнюю часть экрана
-       (сначала номер и название, затем капсула — порядок задан задержками в стилях). Если в кадр попало сразу
-       несколько шагов, они появляются по одному с паузой. Показанный шаг остаётся видимым. */
-    if (!REDUCE && 'IntersectionObserver' in window) {
-      var tlQ = [], tlT = 0;
-      var tlNext = function () {
-        tlT = 0;
-        while (tlQ.length) {
-          var el = tlQ.shift(), r = el.getBoundingClientRect();
-          /* пока ждал очереди, ушёл с экрана — покажем, когда вернётся; паузы только между шагами на экране */
-          if (r.bottom <= 0 || r.top >= window.innerHeight * 0.84) { tio.observe(el); continue; }
-          el.classList.add('is-shown');
-          if (tlQ.length) tlT = setTimeout(tlNext, 340);
-          return;
-        }
-      };
-      var tio = new IntersectionObserver(function (es) {
-        es.filter(function (e) { return e.isIntersecting; })
-          .sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; })
-          .forEach(function (e) { tio.unobserve(e.target); tlQ.push(e.target); });
-        if (tlQ.length && !tlT) tlNext();
-      }, { rootMargin: '0px 0px -16% 0px' });
-      tls.forEach(function (S) {
-        S.tl.classList.add('is-anim');
-        S.steps.forEach(function (st) { tio.observe(st); });
-        if (S.end) tio.observe(S.end);
-      });
-    }
-  }
 
   /* Счётчики: считают, только если появились при прокрутке */
   function countUp(el) {
