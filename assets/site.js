@@ -22,11 +22,11 @@
     menu.addEventListener('click', function (e) { if (e.target.closest('a')) { burger.setAttribute('aria-expanded', 'false'); burger.setAttribute('aria-label', 'Меню'); menu.hidden = true; } });
   }
 
-  /* Шапка закреплена на всей странице главной: текущий раздел подсвечен, по нижнему краю — линия прокрутки.
+  /* Шапка закреплена на всей странице главной: текущий раздел подсвечен.
      Телефон: в шапке «02 / 09 · Недвижимость»; тап по строке открывает меню — карту страницы. */
   var topEl = $('[data-top]');
   if (topEl) {
-    var spyLinks = $$('[data-spy]', topEl), progI = $('.top-prog i', topEl), where = $('.top-where', topEl);
+    var spyLinks = $$('[data-spy]', topEl), where = $('.top-where', topEl);
     var spyIds = [], spyHas = {};
     spyLinks.forEach(function (a) { var id = a.getAttribute('data-spy'); if (!spyHas[id]) { spyHas[id] = 1; spyIds.push(id); } });
     var spyNames = { 'd-invest': 'Инвестиции', 'd-estate': 'Недвижимость', 'd-industry': 'Презентация', 'd-ads': 'Реклама', process: 'Как работаем', works: 'Работы', about: 'О студии', faq: 'Вопросы', brief: 'Заявка' };
@@ -34,12 +34,20 @@
     var spySecs = spyIds.map(function (id) { var el = document.getElementById(id); return el && el.classList.contains('anc') ? el.parentNode : el; });
     var spyOn, spyRaf = 0;
 
-    /* Карта страницы слева: кружок на каждый раздел, линия заполняется по мере прокрутки.
-       Текущий раздел — красный кружок, соседние плавно уменьшаются с расстоянием («лупа»).
-       При входе в новый раздел рядом с кружком ненадолго видно его название; при наведении — все названия.
-       Видна только на широких экранах, где слева от контента есть свободное поле. */
-    var rail = null, railFill = null, railNodes = [], railMoveT = 0, railRef = $('.dsec .wrap') || $('main .wrap');
+    /* Карта страницы слева — структура главной в трёх группах:
+       4 направления (крупные остановки) · справочные разделы (мелкие точки) · заявка (красная точка в конце).
+       Текущий раздел — красный кружок, соседние плавно уменьшаются с расстоянием («лупа»),
+       линия заполняется по мере прокрутки. При входе в раздел ненадолго видно его название, при наведении — все.
+       На больших мониторах, где слева много места, названия направлений и заявки видны всегда.
+       Видна только там, где слева от контента есть свободное поле. */
+    var railKind = function (id) { return id === 'brief' ? 'cta' : /^d-/.test(id) ? 'main' : 'minor'; };
+    var railLabel = { brief: 'Обсудить проект' };
+    var rail = null, railFill = null, railNodes = [], railU = [], railMoveT = 0, railRef = $('.dsec .wrap') || $('main .wrap');
     if (spyIds.length > 1) {
+      /* позиции на линии: равный шаг, между группами — дополнительный промежуток */
+      var GAP = 0.9, u = 0;
+      spyIds.forEach(function (id, i) { if (i && railKind(id) !== railKind(spyIds[i - 1])) u += GAP; railU.push(u); u += 1; });
+      var U = railU[railU.length - 1];
       rail = document.createElement('div');
       rail.className = 'rail';
       rail.setAttribute('aria-hidden', 'true');
@@ -47,11 +55,11 @@
       railFill = $('.rail-fill', rail);
       railNodes = spyIds.map(function (id, i) {
         var a = document.createElement('a');
-        a.className = 'rail-n';
+        a.className = 'rail-n rail-' + railKind(id);
         a.href = '#' + id;
         a.tabIndex = -1;
-        a.style.top = (i / (spyIds.length - 1) * 100).toFixed(3) + '%';
-        a.innerHTML = '<b></b><span><em>' + (i < 9 ? '0' : '') + (i + 1) + '</em>' + esc(spyNames[id] || '') + '</span>';
+        a.style.top = (railU[i] / U * 100).toFixed(3) + '%';
+        a.innerHTML = '<b></b><span><em>' + (i < 9 ? '0' : '') + (i + 1) + '</em>' + esc(railLabel[id] || spyNames[id] || '') + '</span>';
         rail.appendChild(a);
         return a;
       });
@@ -59,9 +67,16 @@
     }
     var railFit = function () {
       if (!rail) return;
-      var gap = railRef ? railRef.getBoundingClientRect().left + 10 : 0;
-      rail.style.setProperty('--x', Math.round(gap / 2) + 'px');
+      var gap = railRef ? railRef.getBoundingClientRect().left + 10 : 0, roomy = gap >= 240;
+      /* с постоянными подписями линия сдвигается влево, чтобы подписи не заходили на контент */
+      rail.style.setProperty('--x', Math.round(roomy ? Math.min(gap / 2, gap - 200) : gap / 2) + 'px');
       rail.classList.toggle('is-fit', gap >= 48 && window.innerHeight >= 520);
+      rail.classList.toggle('is-roomy', roomy);
+    };
+    /* точка на линии для дробного номера раздела: между соседними кружками — линейно */
+    var railAt = function (x) {
+      var n = railU.length, k = Math.min(n - 1, Math.max(0, x)), i = Math.min(n - 2, Math.floor(k));
+      return (railU[i] + (railU[i + 1] - railU[i]) * (k - i)) / railU[n - 1];
     };
     var railDraw = function (tops, cur, line, y, max) {
       var n = railNodes.length, pos = -1;
@@ -72,7 +87,7 @@
         pos = cur + Math.min(1, Math.max(0, (line - start) / Math.max(1, end - start))) * (cur + 1 < n ? 1 : 0.5);
       }
       rail.classList.toggle('is-on', cur >= 0);
-      railFill.style.transform = 'scaleY(' + Math.min(1, Math.max(0, (pos - 0.5) / (n - 1))).toFixed(4) + ')';
+      railFill.style.transform = 'scaleY(' + (cur >= 0 ? railAt(pos - 0.5) : 0).toFixed(4) + ')';
       railNodes.forEach(function (a, i) {
         var s = Math.max(0, 1 - Math.abs(pos - (i + 0.5)) / 2.2);
         a.style.setProperty('--s', s.toFixed(3));
@@ -87,8 +102,6 @@
       var y = window.pageYOffset || de.scrollTop, max = Math.max(1, de.scrollHeight - vh);
       var tops = spySecs.map(function (s) { return s ? s.getBoundingClientRect().top : Infinity; });
       tops.forEach(function (t, i) { if (t <= line) cur = i; });
-      var p = Math.min(1, Math.max(0, y / max));
-      if (progI) progI.style.transform = 'scaleX(' + p.toFixed(4) + ')';
       if (rail) railDraw(tops, cur, line, y, max);
       var id = cur >= 0 ? spyIds[cur] : null;
       if (id === spyOn) return;

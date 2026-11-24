@@ -1223,8 +1223,6 @@ html.wm-on,html.wm-on body{overflow:hidden}
 /* у секций уже есть scroll-margin под закреплённую полосу; якоря секций целей — на высоту шапки */
 [data-page="home"] .anc{top:-66px}
 .top[data-top]{position:sticky;top:0}
-.top-prog{position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--steel);pointer-events:none}
-.top-prog i{display:block;height:100%;background:var(--white);transform:scaleX(0);transform-origin:0 50%;will-change:transform}
 .logo-sign{display:none}
 .logo img.logo-sign{width:28px;height:28px}
 .top[data-top] .nav{align-items:center;gap:22px;font-size:14px}
@@ -1655,23 +1653,33 @@ html.wm-on,html.wm-on body{overflow:hidden}
 .tl.is-anim .tl-step:not(.is-shown) .tl-body .txt,.tl.is-anim .tl-step:not(.is-shown) .tl-btn{opacity:0;transform:translateY(10px)}
 .tl.is-anim .tl-end:not(.is-shown){opacity:0}
 
-/* ===== Карта страницы слева (главная, широкие экраны): кружок на каждый раздел =====
+/* ===== Карта страницы слева (главная, широкие экраны) =====
+   Три группы: 4 направления (.rail-main) · справочные разделы (.rail-minor) · заявка (.rail-cta, красная точка).
    Текущий раздел — красный кружок, соседние плавно уменьшаются с расстоянием; линия заполняется по мере прокрутки.
-   Название раздела всплывает при входе в него (is-new) и при наведении. Блок создаёт скрипт; --x (центр свободного поля слева) и --s (0…1, близость кружка к текущему месту) тоже ставит скрипт. */
-.rail{position:fixed;z-index:15;left:var(--x,24px);top:calc(50% + 32px);width:0;height:min(600px,calc(100vh - 200px));font-family:var(--sans);opacity:0;visibility:hidden;transform:translateY(-50%);transition:opacity .4s,visibility 0s .4s}
+   Название всплывает при входе в раздел (is-new) и при наведении; на больших мониторах (is-roomy) названия
+   направлений и заявки видны всегда. Блок создаёт скрипт; --x (центр линии) и --s (0…1, близость кружка
+   к текущему месту) тоже ставит скрипт. --b — размер кружка вдали, --g — насколько он растёт рядом. */
+.rail{position:fixed;z-index:15;left:var(--x,24px);top:calc(50% + 32px);width:0;height:min(620px,calc(100vh - 190px));font-family:var(--sans);opacity:0;visibility:hidden;transform:translateY(-50%);transition:opacity .4s,visibility 0s .4s}
 .rail.is-fit.is-on{opacity:1;visibility:visible;transition:opacity .4s}
 .rail-line{position:absolute;left:-.5px;top:0;bottom:0;width:1px;background:rgba(219,219,219,.16)}
 .rail-fill{position:absolute;inset:0;background:rgba(219,219,219,.7);transform:scaleY(0);transform-origin:50% 0;will-change:transform}
-.rail-n{--s:0;position:absolute;left:0;display:block;width:40px;height:40px;margin:-20px 0 0 -20px;color:var(--white);text-decoration:none;-webkit-tap-highlight-color:transparent}
-.rail-n b{position:absolute;left:50%;top:50%;width:calc(8px + 22px * var(--s));height:calc(8px + 22px * var(--s));box-sizing:border-box;border:1.5px solid rgba(219,219,219,.5);border-radius:50%;background:var(--graphite);transform:translate(-50%,-50%);transition:border-color .25s,box-shadow .25s}
+.rail-n{--s:0;--b:10px;--g:20px;position:absolute;left:0;display:block;width:40px;height:40px;margin:-20px 0 0 -20px;color:var(--white);text-decoration:none;-webkit-tap-highlight-color:transparent}
+.rail-minor{--b:6px;--g:14px}
+.rail-cta{--b:10px;--g:16px}
+.rail-n b{position:absolute;left:50%;top:50%;width:calc(var(--b) + var(--g) * var(--s));height:calc(var(--b) + var(--g) * var(--s));box-sizing:border-box;border:1.5px solid rgba(219,219,219,.5);border-radius:50%;background:var(--graphite);transform:translate(-50%,-50%);transition:border-color .25s,background-color .25s,box-shadow .25s}
 .rail-n.is-past b{border-color:rgba(219,219,219,.85)}
-.rail-n.is-on b{border-color:var(--red);box-shadow:0 0 0 4px rgba(255,0,9,.14)}
+.rail-cta b{border-color:var(--red);background:var(--red)}
+.rail-n.is-on b{border-color:var(--red);background:var(--graphite);box-shadow:0 0 0 4px rgba(255,0,9,.14)}
 .rail-n.is-on b::after{content:"";position:absolute;inset:0;margin:auto;width:40%;height:40%;border-radius:50%;background:var(--red)}
 .rail-n:hover b{border-color:var(--white)}
-.rail-n span{position:absolute;left:calc(32px + 11px * var(--s));top:50%;display:flex;align-items:center;gap:8px;padding:6px 11px;border:1px solid var(--steel);border-radius:9999px;background:rgba(14,15,17,.92);color:var(--light-grey);font:500 11px/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;opacity:0;transform:translate(-4px,-50%);pointer-events:none;transition:opacity .25s,transform .25s}
+.rail-n span{position:absolute;left:calc(28px + (var(--b) + var(--g) * var(--s)) / 2);top:50%;display:flex;align-items:center;gap:8px;padding:6px 11px;border:1px solid var(--steel);border-radius:9999px;background:rgba(14,15,17,.92);color:var(--light-grey);font:500 11px/1.2 var(--mono);letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;opacity:0;transform:translate(-4px,-50%);pointer-events:none;transition:opacity .25s,transform .25s}
 .rail-n span em{font-style:normal;color:var(--white)}
 .rail-n.is-on span{color:var(--white)}
-.rail-n.is-on span em{color:var(--red)}
+.rail-n.is-on span em,.rail-cta span em{color:var(--red)}
 .rail:hover .rail-n span,.rail.is-new .rail-n.is-on span{opacity:1;transform:translate(0,-50%)}
+/* большой монитор: подписи направлений и заявки всегда на виду — простым текстом, без плашки */
+.rail.is-roomy .rail-n span{padding:0;border-color:transparent;background:none}
+.rail.is-roomy .rail-main span,.rail.is-roomy .rail-cta span{opacity:1;transform:translate(0,-50%);color:var(--dim)}
+.rail.is-roomy .rail-n.is-on span{color:var(--white)}
 @media (max-width:999px){.rail{display:none}}
 @media (prefers-reduced-motion:reduce){.rail,.rail-n b,.rail-n span{transition:none}}
