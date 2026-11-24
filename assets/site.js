@@ -33,15 +33,72 @@
     /* у секций целей якорь — пустой span в начале секции; меряем саму секцию */
     var spySecs = spyIds.map(function (id) { var el = document.getElementById(id); return el && el.classList.contains('anc') ? el.parentNode : el; });
     var spyOn, spyRaf = 0;
+
+    /* Карта страницы слева: кружок на каждый раздел, линия заполняется по мере прокрутки.
+       Текущий раздел — красный кружок, соседние плавно уменьшаются с расстоянием («лупа»).
+       При входе в новый раздел рядом с кружком ненадолго видно его название; при наведении — все названия.
+       Видна только на широких экранах, где слева от контента есть свободное поле. */
+    var rail = null, railFill = null, railNodes = [], railMoveT = 0, railRef = $('.dsec .wrap') || $('main .wrap');
+    if (spyIds.length > 1) {
+      rail = document.createElement('div');
+      rail.className = 'rail';
+      rail.setAttribute('aria-hidden', 'true');
+      rail.innerHTML = '<i class="rail-line"><i class="rail-fill"></i></i>';
+      railFill = $('.rail-fill', rail);
+      railNodes = spyIds.map(function (id, i) {
+        var a = document.createElement('a');
+        a.className = 'rail-n';
+        a.href = '#' + id;
+        a.tabIndex = -1;
+        a.style.top = (i / (spyIds.length - 1) * 100).toFixed(3) + '%';
+        a.innerHTML = '<b></b><span><em>' + (i < 9 ? '0' : '') + (i + 1) + '</em>' + esc(spyNames[id] || '') + '</span>';
+        rail.appendChild(a);
+        return a;
+      });
+      document.body.appendChild(rail);
+    }
+    var railFit = function () {
+      if (!rail) return;
+      var gap = railRef ? railRef.getBoundingClientRect().left + 10 : 0;
+      rail.style.setProperty('--x', Math.round(gap / 2) + 'px');
+      rail.classList.toggle('is-fit', gap >= 48 && window.innerHeight >= 520);
+    };
+    var railDraw = function (tops, cur, line, y, max) {
+      var n = railNodes.length, pos = -1;
+      if (cur >= 0) {
+        /* позиция внутри раздела: 0 — его начало, 1 — начало следующего;
+           последний раздел доходит только до середины, чтобы его кружок был самым крупным в самом низу страницы */
+        var start = tops[cur], end = cur + 1 < n ? tops[cur + 1] : line + (max - y);
+        pos = cur + Math.min(1, Math.max(0, (line - start) / Math.max(1, end - start))) * (cur + 1 < n ? 1 : 0.5);
+      }
+      rail.classList.toggle('is-on', cur >= 0);
+      railFill.style.transform = 'scaleY(' + Math.min(1, Math.max(0, (pos - 0.5) / (n - 1))).toFixed(4) + ')';
+      railNodes.forEach(function (a, i) {
+        var s = Math.max(0, 1 - Math.abs(pos - (i + 0.5)) / 2.2);
+        a.style.setProperty('--s', s.toFixed(3));
+        a.classList.toggle('is-on', i === cur);
+        a.classList.toggle('is-past', i < cur);
+      });
+    };
+
     var spy = function () {
       spyRaf = 0;
       var vh = window.innerHeight, th = topEl.offsetHeight, line = th + (vh - th) * 0.3, cur = -1, de = document.documentElement;
-      spySecs.forEach(function (s, i) { if (s && s.getBoundingClientRect().top <= line) cur = i; });
-      var p = Math.min(1, Math.max(0, (window.pageYOffset || de.scrollTop) / Math.max(1, de.scrollHeight - vh)));
+      var y = window.pageYOffset || de.scrollTop, max = Math.max(1, de.scrollHeight - vh);
+      var tops = spySecs.map(function (s) { return s ? s.getBoundingClientRect().top : Infinity; });
+      tops.forEach(function (t, i) { if (t <= line) cur = i; });
+      var p = Math.min(1, Math.max(0, y / max));
       if (progI) progI.style.transform = 'scaleX(' + p.toFixed(4) + ')';
+      if (rail) railDraw(tops, cur, line, y, max);
       var id = cur >= 0 ? spyIds[cur] : null;
       if (id === spyOn) return;
       spyOn = id;
+      if (rail && id) {
+        /* при входе в новый раздел рядом с кружком на полторы секунды всплывает его название */
+        rail.classList.add('is-new');
+        clearTimeout(railMoveT);
+        railMoveT = setTimeout(function () { rail.classList.remove('is-new'); }, 1600);
+      }
       spyLinks.forEach(function (a) {
         var on = a.getAttribute('data-spy') === id;
         a.classList.toggle('is-on', on);
@@ -58,8 +115,9 @@
       }
     };
     window.addEventListener('scroll', function () { if (!spyRaf) spyRaf = requestAnimationFrame(spy); }, { passive: true });
-    window.addEventListener('resize', spy);
-    window.addEventListener('load', spy);
+    window.addEventListener('resize', function () { railFit(); spy(); });
+    window.addEventListener('load', function () { railFit(); spy(); });
+    railFit();
     spy();
     if (where && burger) {
       where.addEventListener('click', function () { burger.click(); where.setAttribute('aria-expanded', burger.getAttribute('aria-expanded')); });
