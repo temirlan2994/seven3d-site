@@ -1521,46 +1521,6 @@ html.wm-on,html.wm-on body{overflow:hidden}
 .svc-one{margin:0;max-width:56ch;font-size:17px;line-height:1.55;color:var(--light-grey)}
 .svc-also{align-self:flex-start;min-height:38px;font-size:14px}
 .svc-also .ico-play{stroke:none;fill:var(--red)}
-/* ===== Направления на главной: под пакетом — компактный ряд услуг =====
-   Главная — витрина: у каждой услуги кружок с картинкой, название и цена; подробности — в презентации
-   («Что это?») и на странице направления (ссылка «Все услуги и цены»).
-   Телефон: список строк (кружок слева, стрелка справа). Планшет: плитки по сетке. Компьютер: все услуги
-   направления в один ряд, --n (число услуг) ставит разметка. */
-.sv{margin-top:36px}
-.sv-list{list-style:none;margin:0;padding:0;display:grid;border-top:1px solid var(--steel)}
-.sv-card{display:flex;align-items:center;gap:14px;min-height:72px;padding:12px 0;border-bottom:1px solid var(--steel);color:var(--white);text-decoration:none;-webkit-tap-highlight-color:transparent}
-.sv-img{flex:none;width:68px;height:68px;border-radius:50%;overflow:hidden;background:var(--graphite);box-shadow:0 0 0 1px #3a3e45;transition:box-shadow .25s}
-.sv-img img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .6s var(--ease)}
-.sv-t{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0}
-.sv-h{font:600 16px/1.25 var(--sans);color:var(--white);text-wrap:balance;overflow-wrap:break-word}
-.sv-p{font:400 13px/1.2 var(--mono);color:var(--light-grey);white-space:nowrap}
-.sv-card > .ico{flex:none;width:36px;height:36px;padding:9px;border:1px solid var(--steel);border-radius:50%;color:var(--white);transition:transform .25s var(--ease),border-color .2s}
-.sv-card:hover .sv-img{box-shadow:0 0 0 2px var(--red)}
-.sv-card:hover .sv-img img{transform:scale(1.06)}
-.sv-card:hover > .ico{transform:translateX(3px);border-color:var(--light-grey)}
-.sv-card:focus-visible{outline:2px solid var(--white);outline-offset:4px;border-radius:12px}
-/* подсветка, когда 3D-стол на первом экране отправляет к услуге */
-.sv-card.is-pointed .sv-img{box-shadow:0 0 0 2px var(--white),0 0 0 8px rgba(255,0,9,.25)}
-.sv-end{margin:18px 0 0}
-@container page (width < 360px){ .sv-h{-webkit-hyphens:auto;hyphens:auto} }
-@container page (min-width:600px){
-  .sv-list{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:28px 20px;border-top:0}
-  .sv-card{flex-direction:column;gap:14px;min-height:0;padding:0;border-bottom:0;text-align:center}
-  .sv-img{width:min(100%,168px);height:auto;aspect-ratio:1}
-  .sv-t{align-items:center}
-  .sv-card > .ico{display:none}
-  .sv-end{margin-top:32px}
-}
-@container page (min-width:1000px){
-  .sv{margin-top:8px}
-  .sv-k{text-align:center}
-  .sv-list{grid-template-columns:repeat(var(--n,5),minmax(0,1fr));gap:24px}
-  .sv-img{width:min(100%,180px)}
-  .sv-h{font-size:17px}
-  .sv-end{display:flex;justify-content:center;margin-top:36px}
-}
-@media (prefers-reduced-motion:reduce){ .sv-img,.sv-img img,.sv-card > .ico{transition:none} }
-
 /* ===== Карта страницы слева (главная, широкие экраны) =====
    Три группы: 4 направления (.rail-main) · справочные разделы (.rail-minor) · заявка (.rail-cta, красная точка).
    Текущий раздел — красный кружок, соседние плавно уменьшаются с расстоянием; линия заполняется по мере прокрутки.
